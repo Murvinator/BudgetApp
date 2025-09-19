@@ -339,7 +339,7 @@ body {
 }
 
 .expense-item:hover {
-    background: rgb(41, 41, 41);
+    background: var(--system-gray6);
 }
 
 .expense-item:active {
