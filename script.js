@@ -365,6 +365,7 @@ function loadData() {
                     monthlyCategories.forEach(category => {
     const categoryExpenses = budgetData.expenses.filter(e => e.category === category);
     if (categoryExpenses.length === 0) return;
+    categoryExpenses.sort((a, b) => b.amount - a.amount);
 
     // Create separate header
     const categoryHeader = document.createElement('div');
