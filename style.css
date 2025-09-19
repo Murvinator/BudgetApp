@@ -413,6 +413,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 14px 20px;
+    padding-right: 32px;
     background: rgba(255, 59, 48, 0.05);
     font-weight: 600;
     color: var(--system-red);

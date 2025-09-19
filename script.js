@@ -210,6 +210,7 @@ function loadData() {
 
                     let totalDebt = 0;
                     debts.forEach(debt => {
+                        totalDebt += debt.amount;
                         const div = document.createElement('div');
                         div.className = 'expense-item';
                         div.innerHTML = `
@@ -221,7 +222,7 @@ function loadData() {
                         debtList.appendChild(div);
                     });
                      debtTotalContainer.innerHTML = `
-        <span>Total skuld</span>
+        <span>Totalt</span>
         <span>${totalDebt.toLocaleString('sv-SE')} kr</span>
     `;
                     
