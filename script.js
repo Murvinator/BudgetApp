@@ -363,35 +363,40 @@ function loadData() {
                     const monthlyCategories = budgetData.categories;
 
                     monthlyCategories.forEach(category => {
-                        const categoryExpenses = budgetData.expenses.filter(e => e.category === category);
-                        if (categoryExpenses.length === 0) return;
+    const categoryExpenses = budgetData.expenses.filter(e => e.category === category);
+    if (categoryExpenses.length === 0) return;
 
-                        const categoryDiv = document.createElement('div');
-                        categoryDiv.className = 'category';
+    // Create separate header
+    const categoryHeader = document.createElement('div');
+    categoryHeader.className = 'category-header';
+    const header = document.createElement('h3');
+    header.textContent = category;
+    categoryHeader.appendChild(header);
+    container.appendChild(categoryHeader);
 
-                        const header = document.createElement('h3');
-                        header.textContent = category;
-                        categoryDiv.appendChild(header);
+    // Create separate list container
+    const categoryList = document.createElement('div');
+    categoryList.className = 'category-list';
 
-                        categoryExpenses.forEach((expense) => {
-                            const globalIndex = budgetData.expenses.findIndex(e => e === expense);
-                            const isPaid = budgetData.monthlyStatus['current'] && budgetData.monthlyStatus['current'][globalIndex];
+    categoryExpenses.forEach((expense) => {
+        const globalIndex = budgetData.expenses.findIndex(e => e === expense);
+        const isPaid = budgetData.monthlyStatus['current'] && budgetData.monthlyStatus['current'][globalIndex];
 
-                            const expenseDiv = document.createElement('div');
-                            expenseDiv.className = `expense-item ${isPaid ? 'paid' : ''}`;
-                            expenseDiv.innerHTML = `
-                <div class="expense-info">
-                    <div class="expense-name">${expense.name}</div>
-                </div>
-                <div class="expense-amount">${expense.amount.toLocaleString('sv-SE')} kr</div>
-                <input type="checkbox" class="checkbox" ${isPaid ? 'checked' : ''} 
-                       onchange="togglePayment('current', ${globalIndex}, this)">
-            `;
-                            categoryDiv.appendChild(expenseDiv);
-                        });
+        const expenseDiv = document.createElement('div');
+        expenseDiv.className = `expense-item ${isPaid ? 'paid' : ''}`;
+        expenseDiv.innerHTML = `
+            <div class="expense-info">
+                <div class="expense-name">${expense.name}</div>
+            </div>
+            <div class="expense-amount">${expense.amount.toLocaleString('sv-SE')} kr</div>
+            <input type="checkbox" class="checkbox" ${isPaid ? 'checked' : ''} 
+                   onchange="togglePayment('current', ${globalIndex}, this)">
+        `;
+        categoryList.appendChild(expenseDiv);
+    });
 
-                        container.appendChild(categoryDiv);
-                    });
+    container.appendChild(categoryList);
+});
                 }
 
                 // Toggle payment status
