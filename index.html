@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="BudgetApp">
+    <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <title>Budget App</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>BudgetApp</h1>
+            <button class="settings-btn" onclick="openSettings()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path
+                        d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+                    <circle cx="12" cy="12" r="3" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="content">
+            <div id="overview" class="section active">
+                <div class="summary">
+                    <div class="summary-card">
+                        <h4>Inkomst</h4>
+                        <div class="amount" id="totalIncome">0 kr</div>
+                    </div>
+                    <div class="summary-card">
+                        <h4>Utgifter</h4>
+                        <div class="amount" id="expenses">0 kr</div>
+                    </div>
+                    <div class="summary-card">
+                        <h4>Kvar</h4>
+                        <div class="amount" id="remaining">0 kr</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="expenseChart"></canvas>
+                </div>
+
+                <div class="debt-section" id="debtSection" style="display: none;">
+                    <h3>Skulder</h3>
+                    <div id="debtList"></div>
+                    <div class="debt-total-container" id="debtTotalContainer"></div>
+                </div>
+            </div>
+
+            <div id="monthly" class="section">
+                <div id="monthlyExpenses"></div>
+                <div class="month-controls">
+                    <button class="reset-btn" onclick="resetCurrentMonth()">Återställ alla</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-bar">
+        <div class="tab-bar-container">
+            <button class="tab-btn active" onclick="showSection('overview', this)">Översikt</button>
+            <button class="tab-btn" onclick="showSection('monthly', this)">Checklista utgifter</button>
+        </div>
+    </div>
+
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Inställningar</h2>
+                <button class="close" onclick="closeSettings()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h3>Data</h3>
+                    <div class="settings-content">
+                        <div class="export-import">
+                            <button onclick="exportData()">Exportera Data</button>
+                            <button onclick="document.getElementById('importFile').click()">Importera Data</button>
+                            <input type="file" id="importFile" class="file-input" accept=".json"
+                                onchange="importData(event)">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Inkomster</h3>
+                    <div class="settings-content">
+                        <div class="input-group">
+                            <input type="text" id="newIncomeName" placeholder="Namn">
+                            <input type="number" id="newIncomeAmount" placeholder="Belopp">
+                            <button onclick="addIncome()">Lägg till</button>
+                        </div>
+                        <div id="incomeList"></div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Kategorier</h3>
+                    <div class="settings-content">
+                        <div class="input-group">
+                            <input type="text" id="newCategoryName" placeholder="Ny kategori">
+                            <button onclick="addCategory()">Lägg till</button>
+                        </div>
+                        <div id="categoryList"></div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Utgifter</h3>
+                    <div class="settings-content">
+                        <div class="input-group">
+                            <input type="text" id="newExpenseName" placeholder="Namn">
+                            <input type="number" id="newExpenseAmount" placeholder="Belopp">
+                            <select id="newExpenseCategory"></select>
+                            <button onclick="addExpense()">Lägg till</button>
+                        </div>
+                        <div id="expensesList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
