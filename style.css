@@ -349,6 +349,20 @@ body {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
+.category-total {
+    border-top: 1px solid var(--separator);
+    background: red;
+    font-weight: 600;
+}
+
+.category-total .expense-name {
+    color: var(--text-secondary);
+}
+
+.category-total .expense-amount {
+    color: var(--text-primary);
+}
+
 .expense-item:first-child {
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;

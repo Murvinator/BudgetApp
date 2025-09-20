@@ -81,17 +81,6 @@
                 <button class="close" onclick="closeSettings()">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="settings-section">
-                    <h3>Data</h3>
-                    <div class="settings-content">
-                        <div class="export-import">
-                            <button onclick="exportData()">Exportera Data</button>
-                            <button onclick="document.getElementById('importFile').click()">Importera Data</button>
-                            <input type="file" id="importFile" class="file-input" accept=".json"
-                                onchange="importData(event)">
-                        </div>
-                    </div>
-                </div>
 
                 <div class="settings-section">
                     <h3>Inkomster</h3>
@@ -126,6 +115,16 @@
                             <button onclick="addCategory()">Lägg till</button>
                         </div>
                         <div id="categoryList"></div>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h3>Data</h3>
+                    <div class="settings-content">
+                        <div class="export-import">
+                            <button onclick="exportData()">Exportera Data</button>
+                            <button onclick="document.getElementById('importFile').click()">Importera Data</button>
+                            <input type="file" id="importFile" class="file-input" accept=".json" onchange="importData(event)">
+                        </div>
                     </div>
                 </div>
 
