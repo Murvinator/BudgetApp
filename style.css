@@ -181,7 +181,6 @@ body {
 
 .tab-btn {
     padding: 12px 24px;
-    padding-inline: 20px;
     background: transparent;
     border: none;
     color: var(--system-blue);
