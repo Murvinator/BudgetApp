@@ -1,7 +1,7 @@
 let budgetData = {
   income: [],
   expenses: [],
-  categories: ["Fasta utgifter", "Autogiro", "Rörliga utgifter", "Skulder"],
+  categories: [],
   monthlyStatus: {},
 };
 
@@ -551,14 +551,18 @@ function updateSettingsView() {
     );
     if (categoryExpenses.length === 0) return;
 
-    const categorySection = document.createElement("div");
-    categorySection.style.marginBottom = "20px";
-
-    const categoryTitle = document.createElement("h4");
-    categoryTitle.style.cssText =
-      "margin: 16px 0 8px 0; color: var(--text-secondary); font-size: 15px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;";
+    // Create separate header
+    const categoryHeader = document.createElement("div");
+    categoryHeader.className = "category-header";
+    categoryHeader.style.marginTop = "16px";
+    const categoryTitle = document.createElement("h3");
     categoryTitle.textContent = category;
-    categorySection.appendChild(categoryTitle);
+    categoryHeader.appendChild(categoryTitle);
+    expensesList.appendChild(categoryHeader);
+
+    // Create separate list container
+    const categoryList = document.createElement("div");
+    categoryList.className = "category-list";
 
     categoryExpenses.forEach((expense) => {
       const globalIndex = budgetData.expenses.findIndex((e) => e === expense);
@@ -573,10 +577,10 @@ function updateSettingsView() {
                 )} kr</div>
                 <button class="delete-btn" onclick="deleteExpense(${globalIndex})">Ta bort</button>
             `;
-      categorySection.appendChild(div);
+      categoryList.appendChild(div);
     });
 
-    expensesList.appendChild(categorySection);
+    expensesList.appendChild(categoryList);
   });
 }
 
