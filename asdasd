@@ -385,7 +385,6 @@ body {
     }
 }
 
-
 .settings-btn:hover {
     background: var(--system-gray4);
     transform: translateY(-50%) scale(1.05);
@@ -549,6 +548,11 @@ body {
     border-bottom: none;
 }
 
+.expense-item:hover {
+    background: var(--system-gray6);
+    transform: translateX(2px);
+}
+
 .expense-item:active {
     background: var(--system-gray5);
     transform: scale(0.995);
@@ -623,7 +627,7 @@ body {
 }
 
 .category-list:hover {
-    /* transform: translateY(-1px); */
+    transform: translateY(-1px);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
@@ -650,16 +654,16 @@ body {
     border-radius: 20px;
     padding: 0;
     overflow: hidden;
-    box-shadow: 0 1px 1px rgba(255, 59, 48, 0.15), 0 2px 8px rgba(255, 59, 48, 0.08);
+    box-shadow: 0 4px 20px rgba(255, 59, 48, 0.15), 0 2px 8px rgba(255, 59, 48, 0.08);
     border: 1px solid rgba(255, 59, 48, 0.2);
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* .debt-summary-component:hover,
+.debt-summary-component:hover,
 .debt-display-component:hover {
     transform: translateY(-1px);
     box-shadow: 0 8px 30px rgba(255, 59, 48, 0.2), 0 4px 12px rgba(255, 59, 48, 0.12);
-} */
+}
 
 .debt-summary-component h3,
 .debt-display-component h3 {
@@ -735,6 +739,7 @@ body {
 }
 
 .reset-btn:hover {
+    background: #D70015;
     transform: translateY(-1px);
 }
 
@@ -853,7 +858,6 @@ body {
 .tab-btn:active {
     transform: scale(0.95);
 }
-
 /* ================================= */
 /* SETTINGS MODAL */
 /* ================================= */

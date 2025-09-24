@@ -1,0 +1,97 @@
+/* Floating Tab Bar with Liquid Glass Effect */
+.tab-bar {
+    position: fixed;
+    bottom: calc(40px + var(--safe-area-bottom));
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+    animation: slideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.tab-bar-container {
+    position: relative;
+    display: flex;
+    border-radius: 20px;
+    padding: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 2.2);
+}
+
+/* Liquid Glass Layers */
+.liquidGlass-effect {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    backdrop-filter: blur(3px);
+    filter: url(#glass-distortion);
+    overflow: hidden;
+    border-radius: 20px;
+}
+
+.liquidGlass-tint {
+    z-index: 1;
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+}
+
+@media (prefers-color-scheme: dark) {
+    .liquidGlass-tint {
+        background: rgba(30, 30, 30, 0.7);
+    }
+}
+
+
+.liquidGlass-shine {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    overflow: hidden;
+    border-radius: 20px;
+    box-shadow: inset 2px 2px 1px 0 rgba(255, 255, 255, 0.5),
+        inset -1px -1px 1px 1px rgba(255, 255, 255, 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+    .liquidGlass-shine {
+        box-shadow: inset 2px 2px 1px 0 rgba(255, 255, 255, 0.2),
+            inset -1px -1px 1px 1px rgba(255, 255, 255, 0.1);
+    }
+}
+
+.liquidGlass-text {
+    z-index: 3;
+    display: flex;
+    gap: 4px;
+}
+
+/* Tab Buttons */
+.tab-btn {
+    padding: 12px 24px;
+    background: transparent;
+    border: none;
+    color: var(--system-blue);
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    border-radius: 16px;
+    white-space: nowrap;
+}
+
+.tab-btn:hover {
+    background: rgba(0, 122, 255, 0.08);
+    transform: scale(0.98);
+}
+
+.tab-btn.active {
+    color: white;
+    background: var(--system-blue);
+}
+
+.tab-btn:active {
+    transform: scale(0.95);
+}
