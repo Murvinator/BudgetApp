@@ -62,6 +62,7 @@ function importData(event) {
         }
       } catch (error) {
         alert("Fel vid import av data. Kontrollera att filen är korrekt.");
+        console.error(error);
       }
     };
     reader.readAsText(file);
@@ -216,7 +217,6 @@ function deleteExpense(index) {
 function updateOverviewView() {
   updateSummaryCards();
   updateChartComponent();
-  updateDebtSummaryComponent();
 }
 
 function updateSummaryCards() {
@@ -368,43 +368,43 @@ function updateChartComponent() {
   });
 }
 
-function updateDebtSummaryComponent() {
-  const debts = budgetData.expenses.filter((e) => e.category === "Skulder");
-  const debtComponent = document.getElementById("debtSummaryComponent");
-  const debtList = document.getElementById("debtList");
-  const debtTotalContainer = document.getElementById("debtTotalContainer");
+// function updateDebtSummaryComponent() {
+//   const debts = budgetData.expenses.filter((e) => e.category === "Skulder");
+//   const debtComponent = document.getElementById("debtSummaryComponent");
+//   const debtList = document.getElementById("debtList");
+//   const debtTotalContainer = document.getElementById("debtTotalContainer");
 
-  if (debts.length === 0) {
-    debtComponent.style.display = "none";
-    return;
-  }
+//   if (debts.length === 0) {
+//     debtComponent.style.display = "none";
+//     return;
+//   }
 
-  debtComponent.style.display = "block";
-  debtList.innerHTML = "";
+//   debtComponent.style.display = "block";
+//   debtList.innerHTML = "";
 
-  debts.sort((a, b) => a.amount - b.amount);
+//   debts.sort((a, b) => a.amount - b.amount);
 
-  let totalDebt = 0;
-  debts.forEach((debt) => {
-    totalDebt += debt.amount;
-    const div = document.createElement("div");
-    div.className = "expense-item";
-    div.innerHTML = `
-            <div class="expense-info">
-                <div class="expense-name">${debt.name}</div>
-            </div>
-            <div class="expense-amount">${debt.amount.toLocaleString(
-              "sv-SE"
-            )} kr</div>
-        `;
-    debtList.appendChild(div);
-  });
+//   let totalDebt = 0;
+//   debts.forEach((debt) => {
+//     totalDebt += debt.amount;
+//     const div = document.createElement("div");
+//     div.className = "expense-item";
+//     div.innerHTML = `
+//             <div class="expense-info">
+//                 <div class="expense-name">${debt.name}</div>
+//             </div>
+//             <div class="expense-amount">${debt.amount.toLocaleString(
+//               "sv-SE"
+//             )} kr</div>
+//         `;
+//     debtList.appendChild(div);
+//   });
 
-  debtTotalContainer.innerHTML = `
-        <span>Totalt</span>
-        <span>${totalDebt.toLocaleString("sv-SE")} kr</span>
-    `;
-}
+//   debtTotalContainer.innerHTML = `
+//         <span>Totalt</span>
+//         <span>${totalDebt.toLocaleString("sv-SE")} kr</span>
+//     `;
+// }
 
 /* ================================= */
 /* MONTHLY VIEW COMPONENTS */
