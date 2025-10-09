@@ -184,6 +184,19 @@
             </div>
             <div class="modal-body">
 
+                <!-- Variable Expenses Settings Section -->
+                <div class="settings-section">
+                    <h3>Varierande utgifter (Budget)</h3>
+                    <div class="settings-content">
+                        <div class="input-group">
+                            <input type="text" id="newVariableExpenseName" placeholder="Namn (t.ex. Mat)">
+                            <input type="number" id="newVariableExpenseBudget" placeholder="Budget">
+                            <button onclick="addVariableExpense()">Lägg till</button>
+                        </div>
+                        <div id="variableExpensesList"></div>
+                    </div>
+                </div>
+
                 <!-- Expense Settings Section -->
                 <div class="settings-section">
                     <h3>Utgifter</h3>
@@ -207,19 +220,6 @@
                             <button onclick="addCategory()">Lägg till</button>
                         </div>
                         <div id="categoryList"></div>
-                    </div>
-                </div>
-
-                <!-- Variable Expenses Settings Section -->
-                <div class="settings-section">
-                    <h3>Varierande utgifter (Budget)</h3>
-                    <div class="settings-content">
-                        <div class="input-group">
-                            <input type="text" id="newVariableExpenseName" placeholder="Namn (t.ex. Mat)">
-                            <input type="number" id="newVariableExpenseBudget" placeholder="Budget">
-                            <button onclick="addVariableExpense()">Lägg till</button>
-                        </div>
-                        <div id="variableExpensesList"></div>
                     </div>
                 </div>
 

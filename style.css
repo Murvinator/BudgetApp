@@ -637,10 +637,10 @@ body {
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.chart-component:hover {
+/* .chart-component:hover {
     transform: translateY(-1px);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
-}
+} */
 
 /* ================================= */
 /* EXPENSE ITEM COMPONENTS */
@@ -777,7 +777,7 @@ body {
 .debt-summary-component:hover,
 .debt-display-component:hover {
     transform: translateY(-1px);
-    box-shadow: 0 8px 30px rgba(255, 59, 48, 0.2), 0 4px 12px rgba(255, 59, 48, 0.12);
+    box-shadow: 0 3px 10px rgba(255, 59, 48, 0.2), 0 4px 12px rgba(255, 59, 48, 0.12);
 }
 
 .debt-header-toggle {
@@ -791,13 +791,13 @@ body {
     user-select: none;
 }
 
-.debt-header-toggle:hover {
+/* .debt-header-toggle:hover {
     background: rgba(255, 59, 48, 0.08);
 }
 
 .debt-header-toggle:active {
     background: rgba(255, 59, 48, 0.1);
-}
+} */
 
 .debt-header-toggle h3 {
     font-size: 20px;
@@ -834,12 +834,7 @@ body {
 
 .debt-summary-component h3,
 .debt-display-component h3 {
-    padding: 20px 24px;
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--system-red);
-    background: rgba(255, 59, 48, 0.05);
-    border-bottom: 0.5px solid var(--separator);
+    padding: 5px 24px;
     margin: 0;
 }
 
