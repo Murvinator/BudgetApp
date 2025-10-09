@@ -58,17 +58,36 @@
                     </div>
                 </div>
 
+                <!-- Variable Expenses Mini Overview -->
+                <div class="variable-expenses-mini" id="variableExpensesMini" style="display: none;">
+                    <div class="variable-mini-header">
+                        <h3>Månadens budget</h3>
+                        <span class="view-all-link" onclick="showView('budget-view', document.querySelectorAll('.tab-btn')[1])">Se alla →</span>
+                    </div>
+                    <div id="variableExpensesMiniContent"></div>
+                </div>
+
                 <!-- Chart Component -->
                 <div class="chart-component">
                     <canvas id="expenseChart"></canvas>
                 </div>
 
-                <!-- Debt Summary Component -->
-                <!-- <div class="debt-summary-component" id="debtSummaryComponent" style="display: none;">
+                <!-- Debt Summary Component (Collapsible) -->
+                <div class="debt-summary-component" id="debtSummaryComponent" style="display: none;">
+                    <div class="debt-header-toggle" onclick="toggleDebtSection()">
                     <h3>Skulder</h3>
+                        <div class="debt-header-right">
+                            <span class="debt-quick-total" id="debtQuickTotal">0 kr</span>
+                            <svg class="chevron-debt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="debt-content" id="debtContent" style="display: none;">
                     <div id="debtList"></div>
                     <div class="debt-total-container" id="debtTotalContainer"></div>
-                </div> -->
+                </div> 
+            </div>
             </div>
 
             <!-- ============ MONTHLY CHECKLIST VIEW ============ -->
@@ -83,15 +102,36 @@
                 </div>
             </div>
 
-            <!-- ============ DEBTS VIEW ============ -->
-            <div id="debts-view" class="view">
+            <!-- ============ BUDGET VIEW ============ -->
+            <div id="budget-view" class="view">
 
-                <!-- Full Debt Display Component -->
-                <div class="debt-display-component" id="debtDisplayComponent" style="display: none;">
-                    <h3>Skulder</h3>
-                    <div id="debtListFull"></div>
-                    <div class="debt-total-container" id="debtTotalContainerFull"></div>
+                <!-- Variable Expenses Budget Tracking -->
+                <div class="budget-summary-card">
+                    <div class="budget-summary-header">
+                        <h3>Månadens budget</h3>
+                        <div class="month-display" id="currentMonth"></div>
+                    </div>
+                    <div class="budget-summary-stats">
+                        <div class="budget-stat">
+                            <span class="budget-stat-label">Budget</span>
+                            <span class="budget-stat-value" id="totalBudget">0 kr</span>
+                        </div>
+                        <div class="budget-stat">
+                            <span class="budget-stat-label">Använt</span>
+                            <span class="budget-stat-value spent" id="totalSpent">0 kr</span>
+                        </div>
+                        <div class="budget-stat">
+                            <span class="budget-stat-label">Kvar</span>
+                            <span class="budget-stat-value remaining" id="totalRemaining">0 kr</span>
+                        </div>
+                    </div>
+                    <div class="budget-progress-bar">
+                        <div class="budget-progress-fill" id="totalProgress"></div>
+                    </div>
                 </div>
+
+                <!-- Variable Expense Categories -->
+                <div id="variableExpensesContainer"></div>
             </div>
         </div>
     </div>
@@ -106,8 +146,8 @@
             <div class="liquidGlass-shine"></div>
             <div class="liquidGlass-text">
                 <button class="tab-btn active" onclick="showView('overview-view', this)">Översikt</button>
+                <button class="tab-btn" onclick="showView('budget-view', this)">Budget</button>
                 <button class="tab-btn" onclick="showView('monthly-view', this)">Checklista</button>
-                <button class="tab-btn" onclick="showView('debts-view', this)">Skulder</button>
             </div>
         </div>
     </div>
@@ -144,19 +184,6 @@
             </div>
             <div class="modal-body">
 
-                <!-- Income Settings Section -->
-                <div class="settings-section">
-                    <h3>Inkomster</h3>
-                    <div class="settings-content">
-                        <div class="input-group">
-                            <input type="text" id="newIncomeName" placeholder="Namn">
-                            <input type="number" id="newIncomeAmount" placeholder="Belopp">
-                            <button onclick="addIncome()">Lägg till</button>
-                        </div>
-                        <div id="incomeList"></div>
-                    </div>
-                </div>
-
                 <!-- Expense Settings Section -->
                 <div class="settings-section">
                     <h3>Utgifter</h3>
@@ -180,6 +207,32 @@
                             <button onclick="addCategory()">Lägg till</button>
                         </div>
                         <div id="categoryList"></div>
+                    </div>
+                </div>
+
+                <!-- Variable Expenses Settings Section -->
+                <div class="settings-section">
+                    <h3>Varierande utgifter (Budget)</h3>
+                    <div class="settings-content">
+                        <div class="input-group">
+                            <input type="text" id="newVariableExpenseName" placeholder="Namn (t.ex. Mat)">
+                            <input type="number" id="newVariableExpenseBudget" placeholder="Budget">
+                            <button onclick="addVariableExpense()">Lägg till</button>
+                        </div>
+                        <div id="variableExpensesList"></div>
+                    </div>
+                </div>
+
+                <!-- Income Settings Section -->
+                <div class="settings-section">
+                    <h3>Inkomster</h3>
+                    <div class="settings-content">
+                        <div class="input-group">
+                            <input type="text" id="newIncomeName" placeholder="Namn">
+                            <input type="number" id="newIncomeAmount" placeholder="Belopp">
+                            <button onclick="addIncome()">Lägg till</button>
+                        </div>
+                        <div id="incomeList"></div>
                     </div>
                 </div>
 
