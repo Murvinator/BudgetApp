@@ -1,16 +1,46 @@
+  // Header collapse on scroll: add/remove `.small` class to `.header`
+  function setupHeaderScroll() {
+    const header = document.querySelector('.header');
+    if (!header) return;
+
+    const threshold = 60; // px scrolled before collapsing
+
+    function onScroll() {
+      if (window.scrollY > threshold) header.classList.add('small');
+      else header.classList.remove('small');
+    }
+
+    // Run on load and on scroll
+    window.addEventListener('scroll', onScroll, { passive: true });
+    document.addEventListener('DOMContentLoaded', onScroll);
+    // trigger once now in case app mounts after load
+    onScroll();
+  }
+
+  // Initialize header scroll behavior
+  try { setupHeaderScroll(); } catch (e) { console.warn('Header scroll init failed', e); }
+
 /* ================================= */
 /* DATA MODEL & STORAGE */
 /* ================================= */
+
+const DEBT_CATEGORY = "Skulder";
 
 let budgetData = {
   income: [],
   expenses: [],
   categories: [],
   monthlyStatus: {},
-  debtStatus: {}, // Track paid debt status
-  variableExpenses: [], // New: variable expense categories
-  variableExpenseTransactions: {}, // New: track spending per category per month
+  debtStatus: {}, // Track paid debt status (separate from debt items)
+  debts: [], // Separate debt items (previously expenses with category 'Skulder')
+  debtPayments: {}, // { "DebtName": [{amount, note, date}] }
+  variableExpenses: [], // variable expense categories
+  variableExpenseTransactions: {}, // track spending per category per month
 };
+
+function genId(prefix = 'd') {
+  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,8)}`;
+}
 
 let currentMonthIndex = 0;
 const months = [
@@ -36,9 +66,53 @@ function loadData() {
       const parsed = JSON.parse(saved);
       if (parsed.income) budgetData.income = parsed.income;
       if (parsed.expenses) budgetData.expenses = parsed.expenses;
-      if (parsed.categories) budgetData.categories = parsed.categories;
+      if (parsed.categories) {
+        // Ensure the special debt category is not treated as a user-editable category
+        budgetData.categories = parsed.categories.filter((c) => c !== DEBT_CATEGORY);
+      }
       if (parsed.monthlyStatus) budgetData.monthlyStatus = parsed.monthlyStatus;
       if (parsed.debtStatus) budgetData.debtStatus = parsed.debtStatus;
+      // Backwards-compat: if the saved data has a dedicated debts array use it, otherwise migrate
+      if (parsed.debts) {
+        // Ensure debts have ids
+        budgetData.debts = parsed.debts.map((d) => {
+          if (!d.id) d.id = genId();
+          return d;
+        });
+      } else if (parsed.expenses) {
+        // Move any expense entries with category 'Skulder' into budgetData.debts
+        const remaining = [];
+        parsed.expenses.forEach((e) => {
+          if (e.category === DEBT_CATEGORY) {
+            budgetData.debts.push({ id: genId('debt'), name: e.name, amount: e.amount });
+          } else {
+            remaining.push(e);
+          }
+        });
+        // Use migrated remaining expenses if not already assigned
+        if (!parsed.expensesWasExplicitlySet) {
+          budgetData.expenses = remaining;
+        }
+      }
+      // If parsed.debtPayments exists, try to migrate keys to debt ids.
+      if (parsed.debtPayments) {
+        // If keys already match debt ids, keep as is.
+        const keys = Object.keys(parsed.debtPayments);
+        const looksLikeIds = keys.every((k) => budgetData.debts.some((d) => d.id === k));
+        if (looksLikeIds) {
+          budgetData.debtPayments = parsed.debtPayments;
+        } else {
+          const migrated = {};
+          Object.keys(parsed.debtPayments).forEach((key) => {
+            // find debt by name
+            const match = budgetData.debts.find((d) => d.name === key);
+            if (match) {
+              migrated[match.id] = parsed.debtPayments[key];
+            }
+          });
+          budgetData.debtPayments = migrated;
+        }
+      }
       if (parsed.variableExpenses)
         budgetData.variableExpenses = parsed.variableExpenses;
       if (parsed.variableExpenseTransactions)
@@ -78,6 +152,10 @@ function importData(event) {
         const imported = JSON.parse(e.target.result);
         if (confirm("Detta kommer att ersätta all nuvarande data. Fortsätt?")) {
           budgetData = imported;
+          // Migrate any legacy expenses that use the debt category into budgetData.debts
+          migrateDebtsFromExpenses();
+          // Migrate any legacy debtPayments keyed by name into id-keyed structure
+          migrateDebtPaymentsAfterLoad();
           saveData();
           updateAllViews();
           closeSettings();
@@ -90,6 +168,36 @@ function importData(event) {
     };
     reader.readAsText(file);
   }
+}
+
+function migrateDebtPaymentsAfterLoad() {
+  if (!budgetData.debtPayments || !budgetData.debts) return;
+  const keys = Object.keys(budgetData.debtPayments);
+  const looksLikeIds = keys.every((k) => budgetData.debts.some((d) => d.id === k));
+  if (looksLikeIds) return; // already id-keyed
+
+  const migrated = {};
+  keys.forEach((key) => {
+    const match = budgetData.debts.find((d) => d.name === key);
+    if (match) migrated[match.id] = budgetData.debtPayments[key];
+  });
+  budgetData.debtPayments = migrated;
+}
+
+// Migrate legacy debt entries that were saved as expenses with category 'Skulder'
+function migrateDebtsFromExpenses() {
+  if (!budgetData.expenses || !Array.isArray(budgetData.expenses)) return;
+  const remaining = [];
+  budgetData.expenses.forEach((e) => {
+    if (e.category === DEBT_CATEGORY) {
+      budgetData.debts = budgetData.debts || [];
+      // Ensure migrated debts have stable ids
+      budgetData.debts.push({ id: genId('debt'), name: e.name, amount: e.amount });
+    } else {
+      remaining.push(e);
+    }
+  });
+  budgetData.expenses = remaining;
 }
 
 /* ================================= */
@@ -125,8 +233,11 @@ function showView(viewName, button) {
 
 function openSettings() {
   document.getElementById("settingsModal").style.display = "block";
+  // mark body so UI can hide the tab-bar while settings are open
+  document.body.classList.add('settings-open');
   // Prevent background scrolling on iOS-friendly way
   const scrollY = window.scrollY;
+  document.body.dataset.scrollY = scrollY;
   document.body.style.position = "fixed";
   document.body.style.top = `-${scrollY}px`;
   document.body.style.width = "100%";
@@ -135,12 +246,13 @@ function openSettings() {
 
 function closeSettings() {
   document.getElementById("settingsModal").style.display = "none";
+  document.body.classList.remove('settings-open');
   // Restore background scrolling and position
-  const scrollY = document.body.style.top;
+  const scrollY = document.body.dataset.scrollY || 0;
   document.body.style.position = "";
   document.body.style.top = "";
   document.body.style.width = "";
-  window.scrollTo(0, parseInt(scrollY || "0") * -1);
+  window.scrollTo(0, parseInt(scrollY || "0"));
   // Refresh all views to show any changes made in settings
   updateAllViews();
 }
@@ -151,6 +263,11 @@ function closeSettings() {
 
 function addCategory() {
   const name = document.getElementById("newCategoryName").value.trim();
+  if (name === DEBT_CATEGORY) {
+    alert(`'${DEBT_CATEGORY}' är reserverat för skulder och kan inte läggas till som vanlig kategori.`);
+    return;
+  }
+
   if (name && !budgetData.categories.includes(name)) {
     budgetData.categories.push(name);
     document.getElementById("newCategoryName").value = "";
@@ -221,14 +338,19 @@ function addExpense() {
   const amount = parseInt(document.getElementById("newExpenseAmount").value);
   const category = document.getElementById("newExpenseCategory").value;
 
-  if (name && amount && amount > 0 && category) {
+  if (!name || !amount || amount <= 0 || !category) return;
+
+  // If user somehow selects the special debt category, treat as debt and store separately
+  if (category === DEBT_CATEGORY) {
+    budgetData.debts.push({ name, amount });
+  } else {
     budgetData.expenses.push({ name, amount, category });
-    document.getElementById("newExpenseName").value = "";
-    document.getElementById("newExpenseAmount").value = "";
-    updateSettingsView();
-    updateOverviewView();
-    saveData();
   }
+  document.getElementById("newExpenseName").value = "";
+  document.getElementById("newExpenseAmount").value = "";
+  updateSettingsView();
+  updateOverviewView();
+  saveData();
 }
 
 function deleteExpense(index) {
@@ -350,6 +472,7 @@ function updateSummaryCards() {
 
 function updateChartComponent() {
   const ctx = document.getElementById("expenseChart").getContext("2d");
+  if (!ctx) return;
 
   // 1. Beräkna den totala budgeten för alla rörliga utgifter.
   const totalVariableBudget = budgetData.variableExpenses.reduce(
@@ -378,14 +501,15 @@ function updateChartComponent() {
 
   // 4. Skapa en tillfällig lista med utgifter för diagrammet.
   // Vi börjar med de vanliga utgifterna (exklusive skulder).
+  // Use normal expenses (debts are handled separately in `budgetData.debts`)
   const chartExpenses = budgetData.expenses
-    .filter((expense) => expense.category !== "Skulder")
+    .filter((expense) => expense.category !== DEBT_CATEGORY)
     .map((expense) => ({ ...expense })); // Använd map för att skapa en kopia
 
   // 5. Lägg till den rörliga posten i listan, nu med det dynamiska beloppet.
   if (amountForChart > 0) {
     chartExpenses.push({
-      name: "Rörliga Utgifter", // Ändrat namn för att passa båda fallen
+      name: "Rörliga", // Ändrat namn för att passa båda fallen
       amount: amountForChart,
       category: "Rörligt",
     });
@@ -561,11 +685,10 @@ function updateVariableExpensesMini() {
 }
 
 function updateDebtSummaryComponent() {
-  const debts = budgetData.expenses.filter((e) => e.category === "Skulder");
+  const debts = budgetData.debts || [];
   const debtComponent = document.getElementById("debtSummaryComponent");
   const debtList = document.getElementById("debtList");
   const debtTotalContainer = document.getElementById("debtTotalContainer");
-  const debtQuickTotal = document.getElementById("debtQuickTotal");
 
   if (debts.length === 0) {
     debtComponent.style.display = "none";
@@ -576,23 +699,72 @@ function updateDebtSummaryComponent() {
   debtList.innerHTML = "";
 
   let totalDebt = 0;
-  debts.forEach((debt) => {
+  debts.forEach((debt, idx) => {
     totalDebt += debt.amount;
-    const div = document.createElement("div");
-    div.className = "expense-item";
-    div.innerHTML = `
-            <div class="expense-info">
-                <div class="expense-name">${debt.name}</div>
-            </div>
-            <div class="expense-amount">${debt.amount.toLocaleString(
-              "sv-SE"
-            )} kr</div>
-        `;
-    debtList.appendChild(div);
+
+    // Wrapper div for a debt row + expandable edit form (like expenses in settings)
+    const wrapper = document.createElement('div');
+    wrapper.className = 'expense-item-wrapper';
+
+    // Main debt row (click to toggle)
+    const debtRow = document.createElement('div');
+    debtRow.className = 'expense-item editable-expense';
+    debtRow.innerHTML = `
+      <div class="expense-info">
+        <div class="expense-name">${debt.name}</div>
+      </div>
+      <div class="expense-amount">${debt.amount.toLocaleString('sv-SE')} kr</div>
+    `;
+
+    // Edit form (initially hidden) — contains inline payment input and payments history
+    const editForm = document.createElement('div');
+    editForm.className = 'expense-edit-form';
+    editForm.style.display = 'none';
+    editForm.innerHTML = `
+      <div class="edit-form-content">
+        <div class="edit-input-group">
+          <label>Belopp att betala</label>
+          <input type="number" class="debt-pay-amount" placeholder="Belopp" min="0" step="0.01">
+        </div>
+        <div class="edit-actions">
+          <button class="save-edit-btn" onclick="addPaymentInline(${idx}, this)">Betala</button>
+          <button class="cancel-edit-btn" onclick="cancelDebtEdit(this)">Stäng</button>
+        </div>
+        <div class="payments-history" id="payments-for-${debt.id}"></div>
+      </div>
+    `;
+
+    // Toggle edit form on row click (but not when clicking interactive controls inside)
+    debtRow.addEventListener('click', function (e) {
+      if (e.target.closest('button')) return;
+
+      // Close other open edit forms
+      document.querySelectorAll('.expense-edit-form').forEach((form) => {
+        if (form !== editForm) {
+          form.style.display = 'none';
+          form.previousElementSibling.classList.remove('editing');
+        }
+      });
+
+      // Toggle this edit form
+      if (editForm.style.display === 'none') {
+        editForm.style.display = 'block';
+        debtRow.classList.add('editing');
+      } else {
+        editForm.style.display = 'none';
+        debtRow.classList.remove('editing');
+      }
+    });
+
+    wrapper.appendChild(debtRow);
+    wrapper.appendChild(editForm);
+    debtList.appendChild(wrapper);
+
+    // Render payment history inside the edit form (if any)
+    renderPaymentsForDebtAtIndex(idx);
   });
 
-  // Also update the quick total in the header
-  debtQuickTotal.textContent = totalDebt.toLocaleString("sv-SE") + " kr";
+  // The header does not show the total; total is visible in the expanded debt panel below.
 
   debtTotalContainer.innerHTML = `
         <span>Totalt</span>
@@ -610,7 +782,7 @@ function updateMonthlyView() {
 
   // Filter out debt category from monthly view
   const monthlyCategories = budgetData.categories.filter(
-    (category) => category !== "Skulder"
+    (category) => category !== DEBT_CATEGORY
   );
 
   monthlyCategories.forEach((category) => {
@@ -951,6 +1123,7 @@ function updateSettingsView() {
   updateIncomeList();
   updateExpensesList();
   updateVariableExpensesList();
+  updateDebtList();
 }
 
 function updateCategoryDropdown() {
@@ -1021,6 +1194,298 @@ function updateVariableExpensesList() {
         `;
     variableExpensesList.appendChild(div);
   });
+}
+
+function updateDebtList() {
+  const debtsList = document.getElementById("debtsList");
+  if (!debtsList) return;
+  debtsList.innerHTML = "";
+
+  if (!budgetData.debts || budgetData.debts.length === 0) {
+    debtsList.innerHTML =
+      '<p style="color: var(--text-tertiary); font-size: 14px; padding: 12px;">Inga skulder registrerade</p>';
+    return;
+  }
+
+  budgetData.debts.forEach((d, index) => {
+    const div = document.createElement("div");
+    div.className = "expense-item";
+    div.innerHTML = `
+            <div class="expense-info">
+                <div class="expense-name">${d.name}</div>
+            </div>
+            <div class="expense-amount">${d.amount.toLocaleString("sv-SE")} kr</div>
+            <button class="delete-btn" onclick="deleteDebt(${index})">Ta bort</button>
+        `;
+    debtsList.appendChild(div);
+  });
+}
+
+// Add a payment to a debt (index refers to position in budgetData.debts)
+function addPaymentToDebt(index) {
+  // legacy compatibility: previously used prompt; now we open modal
+  openDebtPaymentModal(index);
+}
+
+function renderPaymentsForDebtAtIndex(index) {
+  const debt = budgetData.debts[index];
+  const container = document.getElementById(`payments-for-${debt.id}`);
+  if (!container) return;
+  container.innerHTML = '';
+  const payments = (budgetData.debtPayments && budgetData.debtPayments[debt.id]) || [];
+  if (payments.length === 0) return;
+
+  payments.slice().reverse().forEach((p, i) => {
+    // show newest first; compute actual index
+    const realIndex = payments.length - 1 - i;
+    const div = document.createElement('div');
+    div.className = 'payment-item';
+    div.innerHTML = `
+      <div class="payment-info">
+        <span class="payment-amount">${p.amount.toLocaleString('sv-SE')} kr</span>
+        <span class="payment-date">${new Date(p.date).toLocaleDateString('sv-SE')}</span>
+      </div>
+      <div class="payment-actions">
+        <button onclick="startEditPaymentInline(${index}, ${realIndex}, this)">Ändra</button>
+        <button onclick="deleteDebtPayment(${index}, ${realIndex})">Ta bort</button>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function addPaymentInline(debtIndex, button) {
+  const form = button.closest('.expense-edit-form');
+  const amountInput = form.querySelector('.debt-pay-amount');
+  const amount = parseFloat((amountInput.value || '').toString().replace(',', '.'));
+  if (isNaN(amount) || amount <= 0) { alert('Ange ett giltigt belopp'); return; }
+
+  const debt = budgetData.debts[debtIndex];
+  if (!debt) return;
+
+  budgetData.debtPayments = budgetData.debtPayments || {};
+  if (!budgetData.debtPayments[debt.id]) budgetData.debtPayments[debt.id] = [];
+  budgetData.debtPayments[debt.id].push({ amount, date: new Date().toISOString() });
+
+  debt.amount = Math.max(0, debt.amount - amount);
+
+  saveData();
+  updateDebtSummaryComponent();
+}
+
+function startEditPaymentInline(debtIndex, paymentIndex, button) {
+  // Replace payment row with inline edit controls
+  const debt = budgetData.debts[debtIndex];
+  const container = document.getElementById(`payments-for-${debt.id}`);
+  if (!container) return;
+  const payments = budgetData.debtPayments[debt.id] || [];
+  const payment = payments[paymentIndex];
+  if (!payment) return;
+
+  // Find the DOM node for this payment (payments are rendered newest-first)
+  const items = Array.from(container.querySelectorAll('.payment-item'));
+  const domIndex = items.length - 1 - paymentIndex; // reverse mapping
+  const node = items[domIndex];
+  if (!node) return;
+
+  // Create edit UI
+  const editDiv = document.createElement('div');
+  editDiv.className = 'payment-item edit-inline';
+  editDiv.innerHTML = `
+    <div class="payment-info">
+      <input type="number" class="edit-payment-amount" value="${payment.amount}" min="0" step="0.01">
+    </div>
+    <div class="payment-actions">
+      <button onclick="saveEditedPaymentInline(${debtIndex}, ${paymentIndex}, this)">Spara</button>
+      <button onclick="cancelEditPaymentInline(${debtIndex}, ${paymentIndex})">Avbryt</button>
+    </div>
+  `;
+
+  node.replaceWith(editDiv);
+}
+
+function saveEditedPaymentInline(debtIndex, paymentIndex, button) {
+  const editDiv = button.closest('.edit-inline');
+  const input = editDiv.querySelector('.edit-payment-amount');
+  const newAmount = parseFloat((input.value || '').toString().replace(',', '.'));
+  if (isNaN(newAmount) || newAmount <= 0) { alert('Ange ett giltigt belopp'); return; }
+
+  const debt = budgetData.debts[debtIndex];
+  const payments = budgetData.debtPayments[debt.id] || [];
+  const p = payments[paymentIndex];
+  if (!p) return;
+
+  const delta = newAmount - p.amount;
+  // Apply delta to debt amount (reduce debt by delta)
+  debt.amount = Math.max(0, debt.amount - delta);
+
+  p.amount = newAmount;
+  p.date = new Date().toISOString();
+
+  saveData();
+  updateDebtSummaryComponent();
+}
+
+function cancelEditPaymentInline(debtIndex, paymentIndex) {
+  // simply re-render the payments for this debt
+  renderPaymentsForDebtAtIndex(debtIndex);
+}
+
+function cancelDebtEdit(button) {
+  const editForm = button.closest('.expense-edit-form');
+  if (!editForm) return;
+  editForm.style.display = 'none';
+  const prev = editForm.previousElementSibling;
+  if (prev && prev.classList) prev.classList.remove('editing');
+}
+
+function openDebtPaymentModal(debtIndex, paymentIndex = null) {
+  const modal = document.getElementById('debtPaymentModal');
+  const title = document.getElementById('debtPaymentModalTitle');
+  const amountInput = document.getElementById('paymentAmount');
+  const noteInput = document.getElementById('paymentNote');
+  const idxHidden = document.getElementById('_debtModalIndex');
+  const pHidden = document.getElementById('_debtModalPaymentIndex');
+
+  const debt = budgetData.debts[debtIndex];
+  if (!debt) return;
+
+  idxHidden.value = debtIndex;
+  pHidden.value = paymentIndex === null ? '' : paymentIndex;
+
+  if (paymentIndex === null || paymentIndex === '') {
+    title.textContent = `Betala ${debt.name}`;
+    amountInput.value = '';
+    noteInput.value = '';
+  } else {
+    // load existing payment
+    const payments = (budgetData.debtPayments && budgetData.debtPayments[debt.id]) || [];
+    const p = payments[paymentIndex];
+    if (!p) return;
+    title.textContent = `Redigera betalning - ${debt.name}`;
+    amountInput.value = p.amount;
+    noteInput.value = p.note || '';
+  }
+
+  // Lock scroll (use same approach as settings modal)
+  const scrollY = window.scrollY;
+  document.body.dataset.scrollY = scrollY;
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${scrollY}px`;
+  document.body.style.width = '100%';
+  modal.style.display = 'block';
+}
+
+function closeDebtPaymentModal() {
+  const modal = document.getElementById('debtPaymentModal');
+  const idxHidden = document.getElementById('_debtModalIndex');
+  const pHidden = document.getElementById('_debtModalPaymentIndex');
+  const amountInput = document.getElementById('paymentAmount');
+  const noteInput = document.getElementById('paymentNote');
+  modal.style.display = 'none';
+  // restore scroll
+  const scrollY = document.body.dataset.scrollY || 0;
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.width = '';
+  window.scrollTo(0, parseInt(scrollY || '0'));
+  idxHidden.value = '';
+  pHidden.value = '';
+  amountInput.value = '';
+  noteInput.value = '';
+  const validation = document.getElementById('paymentValidation');
+  if (validation) { validation.style.display = 'none'; validation.textContent = ''; }
+}
+
+function saveDebtPayment() {
+  const idxHidden = document.getElementById('_debtModalIndex');
+  const pHidden = document.getElementById('_debtModalPaymentIndex');
+  const amountInput = document.getElementById('paymentAmount');
+  const noteInput = document.getElementById('paymentNote');
+
+  const debtIndex = parseInt(idxHidden.value);
+  const paymentIndex = pHidden.value === '' ? null : parseInt(pHidden.value);
+  const amount = parseFloat((amountInput.value || '').toString().replace(',', '.'));
+  const note = noteInput.value || '';
+
+  const validation = document.getElementById('paymentValidation');
+  if (isNaN(debtIndex) || !budgetData.debts[debtIndex]) { if (validation) { validation.textContent = 'Ogiltig skuld'; validation.style.display='block'; } return; }
+  if (isNaN(amount) || amount <= 0) { if (validation) { validation.textContent = 'Ange ett giltigt belopp'; validation.style.display='block'; } return; }
+
+  const debt = budgetData.debts[debtIndex];
+  budgetData.debtPayments = budgetData.debtPayments || {};
+  if (!budgetData.debtPayments[debt.id]) budgetData.debtPayments[debt.id] = [];
+  const payments = budgetData.debtPayments[debt.id];
+
+  if (paymentIndex === null) {
+    // add new payment
+    payments.push({ amount, note, date: new Date().toISOString() });
+    debt.amount = Math.max(0, debt.amount - amount);
+  } else {
+    // edit existing payment: compute delta
+    const old = payments[paymentIndex];
+    if (!old) { alert('Ogiltig betalning'); return; }
+    const delta = amount - old.amount;
+    // apply delta to debt (reverse old then apply new)
+    debt.amount = Math.max(0, debt.amount - delta);
+    old.amount = amount;
+    old.note = note;
+    old.date = new Date().toISOString();
+  }
+
+  saveData();
+  updateDebtSummaryComponent();
+  updateSettingsView();
+  closeDebtPaymentModal();
+}
+
+function deleteDebtPayment(debtIndex, paymentIndex) {
+  const debt = budgetData.debts[debtIndex];
+  if (!debt) return;
+  const payments = budgetData.debtPayments[debt.id] || [];
+  if (!payments[paymentIndex]) return;
+  if (!confirm('Ta bort denna betalning?')) return;
+
+  // Revert payment amount back to debt
+  const p = payments.splice(paymentIndex, 1)[0];
+  debt.amount = (debt.amount || 0) + p.amount;
+
+  saveData();
+  updateDebtSummaryComponent();
+  updateSettingsView();
+}
+
+function editDebtPayment(debtIndex, paymentIndex) {
+  // replaced by modal-based edit flow; open modal with payment data
+  openDebtPaymentModal(debtIndex, paymentIndex);
+}
+
+function addDebt() {
+  const name = document.getElementById("newDebtName").value.trim();
+  const amount = parseInt(document.getElementById("newDebtAmount").value);
+  if (!name || !amount || amount <= 0) return;
+  budgetData.debts = budgetData.debts || [];
+  const id = genId('debt');
+  budgetData.debts.push({ id, name, amount });
+  // Initialize empty payments array for this debt (keyed by id)
+  budgetData.debtPayments = budgetData.debtPayments || {};
+  if (!budgetData.debtPayments[id]) budgetData.debtPayments[id] = [];
+  document.getElementById("newDebtName").value = "";
+  document.getElementById("newDebtAmount").value = "";
+  updateSettingsView();
+  saveData();
+}
+
+function deleteDebt(index) {
+  if (!budgetData.debts || !budgetData.debts[index]) return;
+  if (!confirm("Är du säker på att du vill ta bort denna skuld?")) return;
+  const removed = budgetData.debts.splice(index, 1)[0];
+  // remove any payment history keyed by id
+  if (removed && removed.id && budgetData.debtPayments) {
+    delete budgetData.debtPayments[removed.id];
+  }
+  updateSettingsView();
+  saveData();
 }
 
 function updateExpensesList() {

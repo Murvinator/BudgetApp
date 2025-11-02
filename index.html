@@ -21,16 +21,9 @@
     <!-- HEADER SECTION -->
     <!-- ================================= -->
     <div class="header">
-        <div class="header-content">
-            <h1>Budget</h1>
-            <button class="settings-btn" onclick="openSettings()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path
-                        d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
-                    <circle cx="12" cy="12" r="3" />
-                </svg>
-            </button>
-        </div>
+            <div class="header-content">
+                <h1>Budget</h1>
+            </div>
     </div>
 
     <!-- ================================= -->
@@ -49,7 +42,7 @@
                         <div class="amount" id="totalIncome">0 kr</div>
                     </div>
                     <div class="summary-card">
-                        <h4>Utgifter</h4>
+                        <h4>Fasta utgifter</h4>
                         <div class="amount" id="expenses">0 kr</div>
                     </div>
                     <div class="summary-card">
@@ -77,7 +70,6 @@
                     <div class="debt-header-toggle" onclick="toggleDebtSection()">
                     <h3>Skulder</h3>
                         <div class="debt-header-right">
-                            <span class="debt-quick-total" id="debtQuickTotal">0 kr</span>
                             <svg class="chevron-debt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <polyline points="6 9 12 15 18 9"></polyline>
                             </svg>
@@ -140,47 +132,41 @@
     <!-- NAVIGATION TAB BAR -->
     <!-- ================================= -->
     <div class="tab-bar">
-        <div class="tab-bar-container liquidGlass-wrapper">
-            <div class="liquidGlass-effect"></div>
-            <div class="liquidGlass-tint"></div>
-            <div class="liquidGlass-shine"></div>
-            <div class="liquidGlass-text">
-                <button class="tab-btn active" onclick="showView('overview-view', this)">Översikt</button>
-                <button class="tab-btn" onclick="showView('budget-view', this)">Budget</button>
-                <button class="tab-btn" onclick="showView('monthly-view', this)">Checklista</button>
+        <div class="tab-bar-container">
+                <button type="button" class="nav-action-btn" onclick="openSettings()">
+                    <!-- gear icon (same svg previously used) -->
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+                        <circle cx="12" cy="12" r="3" />
+                    </svg>
+                </button>
+                <div class="tab-group">
+                    <button type="button" class="tab-btn active" onclick="showView('overview-view', this)">Översikt</button>
+                    <button type="button" class="tab-btn" onclick="showView('budget-view', this)">Budget</button>
+                    <button type="button" class="tab-btn" onclick="showView('monthly-view', this)">Checklista</button>
+                </div>
+                <!-- right circular settings/search bubble -->
+                <button type="button" class="nav-action-btn right" onclick="openSettings()">
+                    <!-- gear icon for settings -->
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+                        <circle cx="12" cy="12" r="3" />
+                    </svg>
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- ================================= -->
-    <!-- LIQUID GLASS SVG FILTERS -->
-    <!-- ================================= -->
-    <svg style="display: none">
-        <filter id="glass-distortion" x="0%" y="0%" width="100%" height="100%" filterUnits="objectBoundingBox">
-            <feTurbulence type="fractalNoise" baseFrequency="0.01 0.01" numOctaves="1" seed="5" result="turbulence" />
-            <feComponentTransfer in="turbulence" result="mapped">
-                <feFuncR type="gamma" amplitude="1" exponent="10" offset="0.5" />
-                <feFuncG type="gamma" amplitude="0" exponent="1" offset="0" />
-                <feFuncB type="gamma" amplitude="0" exponent="1" offset="0.5" />
-            </feComponentTransfer>
-            <feGaussianBlur in="turbulence" stdDeviation="3" result="softMap" />
-            <feSpecularLighting in="softMap" surfaceScale="5" specularConstant="1" specularExponent="100"
-                lighting-color="white" result="specLight">
-                <fePointLight x="-200" y="-200" z="300" />
-            </feSpecularLighting>
-            <feComposite in="specLight" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="litImage" />
-            <feDisplacementMap in="SourceGraphic" in2="softMap" scale="150" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-    </svg>
+    <!-- liquid-glass SVG filter removed (not needed) -->
 
     <!-- ================================= -->
     <!-- SETTINGS MODAL -->
     <!-- ================================= -->
-    <div id="settingsModal" class="modal">
+    <div id="settingsModal" class="modal" style="display:none;">
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Inställningar</h2>
-                <button class="close" onclick="closeSettings()">&times;</button>
+                <button type="button" class="close" onclick="closeSettings()">&times;</button>
             </div>
             <div class="modal-body">
 
@@ -199,7 +185,7 @@
 
                 <!-- Expense Settings Section -->
                 <div class="settings-section">
-                    <h3>Utgifter</h3>
+                    <h3>Fasta utgifter</h3>
                     <div class="settings-content">
                         <div class="input-group">
                             <input type="text" id="newExpenseName" placeholder="Namn">
@@ -236,6 +222,19 @@
                     </div>
                 </div>
 
+                <!-- Debts (Skulder) Settings Section -->
+                <div class="settings-section">
+                    <h3>Skulder</h3>
+                    <div class="settings-content">
+                        <div class="input-group">
+                            <input type="text" id="newDebtName" placeholder="Namn (t.ex. Banklån)">
+                            <input type="number" id="newDebtAmount" placeholder="Belopp">
+                            <button onclick="addDebt()">Lägg till</button>
+                        </div>
+                        <div id="debtsList"></div>
+                    </div>
+                </div>
+
                 <!-- Data Import/Export Section -->
                 <div class="settings-section">
                     <h3>Data</h3>
@@ -254,6 +253,33 @@
     </div>
 
     <script src="script.js"></script>
+    
+    <!-- ================================= -->
+    <!-- PAYMENT MODAL (Add/Edit Debt Payment) -->
+    <!-- Inserted near the end so it's available globally -->
+    <div id="debtPaymentModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="debtPaymentModalTitle">Betala skuld</h2>
+                <button class="close" onclick="closeDebtPaymentModal()">&times;</button>
+            </div>
+                    <div class="modal-body">
+                <div class="settings-content">
+                    <input type="hidden" id="_debtModalIndex">
+                    <input type="hidden" id="_debtModalPaymentIndex">
+                    <div class="input-group">
+                        <input type="number" id="paymentAmount" placeholder="Belopp (kr)" min="0" step="0.01">
+                        <input type="text" id="paymentNote" placeholder="Anteckning (valfritt)">
+                    </div>
+                    <div id="paymentValidation" style="color:var(--system-red); font-size:13px; margin-top:6px; display:none;"></div>
+                    <div style="display:flex; gap:8px; margin-top:8px;">
+                        <button onclick="saveDebtPayment()">Spara</button>
+                        <button onclick="closeDebtPaymentModal()">Avbryt</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

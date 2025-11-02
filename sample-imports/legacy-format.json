@@ -1,0 +1,11 @@
+{
+  "income": [ { "name": "Lön", "amount": 30000 } ],
+  "categories": [ "Mat", "Transport", "Skulder" ],
+  "expenses": [
+    { "name": "Hyra", "amount": 8000, "category": "Mat" },
+    { "name": "Banklån", "amount": 50000, "category": "Skulder" }
+  ],
+  "debtPayments": {
+    "Banklån": [ { "amount": 2000, "note": "Inbetalning", "date": "2024-10-01T12:00:00.000Z" } ]
+  }
+}

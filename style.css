@@ -30,6 +30,8 @@
     /* Theme Colors - Light Mode */
     --bg-primary: #FFFFFF;
     --bg-secondary: #F2F2F7;
+    /* Card background (matches iOS cards) */
+    --card-bg: #FFFFFF;
     --text-primary: #000000;
     --text-secondary: #3C3C43;
     --text-tertiary: #787880;
@@ -51,6 +53,7 @@
         --separator: rgba(84, 84, 88, 0.6);
         --system-gray5: #2C2C2E;
         --system-gray6: #1C1C1E;
+        --card-bg: #1C1C1E;
     }
 }
 
@@ -60,7 +63,8 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background: var(--bg-secondary);
+    /* Page background should match the header (iOS style) */
+    background: var(--bg-primary);
     min-height: 100vh;
     color: var(--text-primary);
     font-size: 17px;
@@ -71,6 +75,62 @@ body {
     /* Prevent horizontal bounce */
     overscroll-behavior-x: none;
 }
+
+/* Modal basics (used for payment modal) */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.35);
+    z-index: 4000; /* above nav bar */
+}
+.modal-content {
+    background: var(--bg-primary);
+    border-radius: 12px;
+    width: 92%;
+    max-width: 480px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+.modal-header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 16px;
+    border-bottom: 0.5px solid var(--separator);
+}
+.modal-body { padding: 16px; }
+
+.modal .input-group input[type="number"] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+.modal .input-group input::-webkit-outer-spin-button,
+.modal .input-group input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.validation { color: var(--system-red); font-size: 13px; }
+
+/* Debt / payment styles */
+.debt-item { display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-bottom: 0.5px solid var(--separator); background: var(--card-bg); margin:8px 0; border-radius:8px; }
+.debt-item .debt-actions { margin-left: 12px; }
+.add-payment-btn { padding:6px 10px; background:var(--system-blue); color:#fff; border:none; border-radius:8px; cursor:pointer; }
+.payments-list { margin-top:8px; padding-left:12px; }
+.payment-item { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom: 0.5px dashed var(--separator); }
+.payment-info { display:flex; gap:8px; align-items:center; }
+/* Payment entry details: amount and date */
+.payment-amount { font-weight: 600; color: var(--text-primary); }
+.payment-date { font-size: 13px; color: var(--text-tertiary); margin-left: 12px; }
+.payment-actions button { margin-left:8px; padding:6px 8px; border-radius:6px; border:none; cursor:pointer; }
+.payment-actions button:first-child { background: var(--system-gray5); }
+.payment-actions button:last-child { background: var(--system-red); color:white; }
 
 .container {
     max-width: 1200px;
@@ -108,7 +168,8 @@ body {
 .header {
     background: var(--bg-primary);
     padding: 20px 20px 24px;
-    border-bottom: 0.5px solid var(--separator);
+    /* removed bottom hairline to match iOS settings look */
+    border-bottom: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -116,7 +177,7 @@ body {
     z-index: 100;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    text-align: center;
+    text-align: left;
     /* Prevent header from bouncing */
     overscroll-behavior: none;
 }
@@ -125,14 +186,62 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    padding-left: 10px;
 }
 
 .header h1 {
-    font-size: 34px;
+    font-size: 44px; /* slightly bigger for stronger iOS feel */
     font-weight: 700;
     color: var(--text-primary);
-    margin-bottom: 4px;
+    margin: 0;
     letter-spacing: -0.5px;
+}
+
+/* Collapsed header state when scrolling: centers and shrinks the title and reveals a subtle faded band */
+.header::after {
+    /* full-header overlay used when collapsed to create the soft faded header effect
+       it covers the entire header area so you don't see divider lines */
+    content: '';
+    position: absolute;
+    inset: 0; /* cover full header */
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 220ms ease, transform 220ms ease;
+    transform: translateY(6px);
+    border-radius: inherit;
+}
+
+.header.small {
+    padding: 8px 16px 10px;
+}
+
+.header.small .header-content {
+    justify-content: center;
+    padding-left: 0;
+}
+
+.header.small h1 {
+    font-size: 18px;
+    font-weight: 700;
+    transition: font-size 180ms ease;
+    color: var(--text-primary);
+}
+
+.header.small::after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* header overlay colors for light/dark modes */
+@media (prefers-color-scheme: dark) {
+    .header::after { background: linear-gradient(180deg, rgba(0,0,0,0.22), rgba(0,0,0,0.18)); }
+}
+@media (prefers-color-scheme: light) {
+    .header::after { background: linear-gradient(180deg, rgba(255,255,255,0.78), rgba(255,255,255,0.65)); }
 }
 
 .header p {
@@ -158,6 +267,128 @@ body {
     font-size: 20px;
     color: var(--text-secondary);
     transition: all 0.2s ease;
+    display: none; /* hide header settings button — settings now live in nav bubbles */
+}
+
+/* Nav action button (circular) inside the liquid glass nav bar */
+.nav-action-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 26px;
+    background: var(--card-bg);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+    cursor: pointer;
+    margin-right: 12px;
+    border: 1px solid rgba(0,0,0,0.06);
+}
+/* right-side variant */
+.nav-action-btn.right {
+    margin-left: 12px;
+    margin-right: 0;
+}
+
+.nav-action-btn svg { width: 20px; height: 20px; color: var(--text-secondary); }
+/* make the circular buttons look like liquid glass bubbles */
+.nav-action-btn {
+    border: 1px solid rgba(0,0,0,0.06);
+    backdrop-filter: blur(6px);
+}
+
+.nav-action-btn { color: var(--text-secondary); }
+
+/* Make the nav pill container a positioned element so we can place the action bubbles outside of the pill
+   visually while keeping the same look (border/backdrop). The bubbles are absolutely positioned circles
+   that sit half-overlapping the nav pill. This separates their border from the pill's rounded border. */
+.tab-bar {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(40px + var(--safe-area-bottom));
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+}
+
+.tab-bar-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 28px; /* extra horizontal padding so bubbles sit outside */
+    border-radius: 999px;
+    background: transparent; /* leave visual styling to inner group and bubbles */
+}
+
+/* Position action bubbles so they visually sit outside the pill, with matching border & blur */
+.tab-bar-container .nav-action-btn:first-of-type {
+    position: absolute;
+    left: -38px; /* move bubbles closer while avoiding overlap */
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1210;
+}
+
+.tab-bar-container .nav-action-btn.right {
+    position: absolute;
+    right: -38px; /* move bubbles closer while avoiding overlap */
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1210;
+}
+
+/* Ensure the bubbles use a subtle border similar to the pill but remain independent */
+.tab-bar-container .nav-action-btn {
+    backdrop-filter: blur(6px);
+}
+
+/* The centered group of three tabs should be its own inner pill so it reads as the primary control
+   while the two circular action bubbles sit outside it */
+.tab-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+    padding: 10px 14px; /* tighter left/right so border feels shorter */
+    border-radius: 999px;
+    background: var(--card-bg);
+    border: 1px solid var(--separator);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+.tab-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 28px;
+    min-width: 120px;
+    background: transparent; /* sit on top of the group surface */
+    border-radius: 12px;
+    border: none;
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.tab-btn.active {
+    /* subtle emphasis for active tab */
+    background: rgba(0,0,0,0.06);
+}
+
+.tab-btn:active { transform: translateY(0); }
+
+/* Hide the tab-bar when settings modal is open; JS toggles `settings-open` on body */
+body.settings-open .tab-bar { display: none !important; }
+
+@media (prefers-color-scheme: dark) {
+    .tab-bar .nav-action-btn { border: 1px solid rgba(255,255,255,0.06); }
+    .tab-bar .tab-bar-inner { border: 1px solid rgba(255,255,255,0.06); }
+}
+
+@media (prefers-color-scheme: dark) {
+    .nav-action-btn { border: 1px solid rgba(255,255,255,0.06); box-shadow: 0 6px 18px rgba(0,0,0,0.5); }
 }
 
 .close:hover {
@@ -268,7 +499,7 @@ body {
     align-items: center;
     padding: 10px 12px;
     margin: 8px 0;
-    background: var(--bg-primary);
+    background: var(--card-bg);
     border-radius: 8px;
     border: 0.5px solid var(--separator);
 }
@@ -629,7 +860,7 @@ body {
 /* ================================= */
 
 .chart-component {
-    background: var(--bg-primary);
+    background: var(--card-bg);
     border-radius: 20px;
     padding: 32px;
     margin-bottom: 32px;
@@ -652,7 +883,7 @@ body {
     padding: 16px 20px;
     border-bottom: 0.5px solid var(--separator);
     transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    background: var(--bg-primary);
+    background: var(--card-bg);
     position: relative;
 }
 
@@ -732,7 +963,7 @@ body {
 }
 
 .category-list {
-    background: var(--bg-primary);
+    background: var(--card-bg);
     border-radius: 16px;
     margin-bottom: 24px;
     overflow: hidden;
@@ -764,7 +995,7 @@ body {
 
 .debt-summary-component,
 .debt-display-component {
-    background: var(--bg-primary);
+    background: var(--card-bg);
     border-radius: 20px;
     padding: 0;
     overflow: hidden;
@@ -883,7 +1114,7 @@ body {
 /* ================================= */
 
 .variable-expenses-mini {
-    background: var(--bg-primary);
+    background: var(--card-bg);
     border-radius: 20px;
     padding: 24px;
     margin-bottom: 32px;
@@ -1062,7 +1293,7 @@ body {
 }
 
 .variable-expense-card {
-    background: var(--bg-primary);
+    background: var(--card-bg);
     border-radius: 20px;
     padding: 24px;
     margin-bottom: 20px;
@@ -1211,7 +1442,7 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 12px 16px;
-    background: var(--bg-secondary);
+    background: var(--card-bg);
     border-radius: 10px;
     transition: all 0.2s ease;
 }
@@ -1321,22 +1552,30 @@ body {
 /* ================================= */
 
 .tab-bar {
-    position: fixed;
-    bottom: calc(40px + var(--safe-area-bottom));
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 999;
+    position: fixed !important;
+    bottom: calc(80px + var(--safe-area-bottom)); /* move further down */
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center; /* center the tab-bar container */
+    z-index: 3000; /* above most content, below modal */
     animation: slideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+    transform: translateZ(0);
 }
 
 .tab-bar-container {
-    position: relative;
-    display: flex;
-    border-radius: 20px;
-    padding: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.1);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 2.2);
+    /* central pill container — merged with the earlier pill styles so bubbles can overlap */
+    /* position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 999px;
+    background: var(--card-bg);
+    border: 1px solid var(--separator);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12), 0 6px 20px rgba(0,0,0,0.06);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 2.2); */
 }
 
 @keyframes slideUp {
@@ -1351,100 +1590,11 @@ body {
     }
 }
 
-/* Liquid Glass Effects */
-.liquidGlass-effect {
-    position: absolute;
-    z-index: 0;
-    inset: 0;
-    backdrop-filter: blur(3px);
-    filter: url(#glass-distortion);
-    overflow: hidden;
-    border-radius: 20px;
-}
+/* Liquid glass layers removed — inner pill styling handled by .tab-bar-container */
 
-.liquidGlass-tint {
-    z-index: 1;
-    position: absolute;
-    inset: 0;
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 20px;
-}
-
-@media (prefers-color-scheme: dark) {
-    .liquidGlass-tint {
-        background: rgba(30, 30, 30, 0.7);
-    }
-}
-
-.liquidGlass-shine {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    overflow: hidden;
-    border-radius: 20px;
-    box-shadow: inset 2px 2px 1px 0 rgba(255, 255, 255, 0.5),
-        inset -1px -1px 1px 1px rgba(255, 255, 255, 0.3);
-}
-
-@media (prefers-color-scheme: dark) {
-    .liquidGlass-shine {
-        box-shadow: inset 2px 2px 1px 0 rgba(255, 255, 255, 0.2),
-            inset -1px -1px 1px 1px rgba(255, 255, 255, 0.1);
-    }
-}
-
-.liquidGlass-text {
-    z-index: 3;
-    display: flex;
-    gap: 4px;
-}
-
-/* Tab Buttons */
-.tab-btn {
-    padding: 12px 24px;
-    background: transparent;
-    border: none;
-    color: var(--system-blue);
-    cursor: pointer;
-    font-size: 15px;
-    font-weight: 600;
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    position: relative;
-    border-radius: 16px;
-    white-space: nowrap;
-}
-
-.tab-btn:hover {
-    background: rgba(0, 122, 255, 0.08);
-    transform: scale(0.98);
-}
-
-.tab-btn.active {
-    color: white;
-    background: var(--system-blue);
-}
-
-.tab-btn:active {
-    transform: scale(0.95);
-}
-
-/* ================================= */
-/* SETTINGS MODAL */
-/* ================================= */
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 2000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    animation: modalFadeIn 0.3s ease-out;
-}
+/* (Liquid glass layers removed) The nav now uses a simpler pill + bubbles layout.
+   The inner pill is styled via .tab-bar-container and the centered buttons via
+   .tab-bar-container .liquidGlass-text > div. */
 
 @keyframes modalFadeIn {
     from {
