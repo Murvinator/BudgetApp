@@ -69,7 +69,8 @@ body {
     color: var(--text-primary);
     font-size: 17px;
     line-height: 1.47;
-    padding-top: calc(80px + var(--safe-area-top));
+    /* increased top padding to accommodate larger header title */
+    padding-top: calc(110px + var(--safe-area-top));
     padding-bottom: calc(80px + var(--safe-area-bottom));
     overflow-x: hidden;
     /* Prevent horizontal bounce */
@@ -194,7 +195,7 @@ body {
 }
 
 .header h1 {
-    font-size: 44px; /* slightly bigger for stronger iOS feel */
+    font-size: 54px; /* larger title for native iOS-style header */
     font-weight: 700;
     color: var(--text-primary);
     margin: 0;
@@ -225,9 +226,9 @@ body {
 }
 
 .header.small h1 {
-    font-size: 18px;
+    font-size: 20px; /* consistent with compact navigation titles */
     font-weight: 700;
-    transition: font-size 180ms ease;
+    transition: font-size 220ms ease;
     color: var(--text-primary);
 }
 
@@ -306,7 +307,8 @@ body {
     position: fixed;
     left: 50%;
     transform: translateX(-50%);
-    bottom: calc(40px + var(--safe-area-bottom));
+    /* move closer to the bottom for iPhone screens */
+    bottom: calc(20px + var(--safe-area-bottom));
     z-index: 1200;
     display: flex;
     align-items: center;
@@ -327,7 +329,7 @@ body {
 /* Position action bubbles so they visually sit outside the pill, with matching border & blur */
 .tab-bar-container .nav-action-btn:first-of-type {
     position: absolute;
-    left: -38px; /* move bubbles closer while avoiding overlap */
+    left: -38px; /* slightly closer for compact pill */
     top: 50%;
     transform: translateY(-50%);
     z-index: 1210;
@@ -335,7 +337,7 @@ body {
 
 .tab-bar-container .nav-action-btn.right {
     position: absolute;
-    right: -38px; /* move bubbles closer while avoiding overlap */
+    right: -38px; /* slightly closer for compact pill */
     top: 50%;
     transform: translateY(-50%);
     z-index: 1210;
@@ -351,8 +353,8 @@ body {
 .tab-group {
     display: inline-flex;
     align-items: center;
-    gap: 18px;
-    padding: 10px 14px; /* tighter left/right so border feels shorter */
+    gap: 8px; /* tighter gap so tab labels sit closer */
+    padding: 6px 10px; /* reduce overall pill padding */
     border-radius: 999px;
     background: var(--card-bg);
     border: 1px solid var(--separator);
@@ -657,7 +659,7 @@ body.settings-open .tab-bar { display: none !important; }
 
 @media (max-width: 768px) {
     .header h1 {
-        font-size: 28px;
+        font-size: 36px; /* larger mobile title similar to iOS Settings */
     }
 
     .summary-cards {
@@ -1565,27 +1567,23 @@ body.settings-open .tab-bar { display: none !important; }
 }
 
 .tab-bar-container {
-    /* central pill container — merged with the earlier pill styles so bubbles can overlap */
-    /* position: relative;
+    position: relative;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
+    gap: 10px;
+    padding: 6px 20px; /* reduced padding so pill is narrower on small screens */
     border-radius: 999px;
-    background: var(--card-bg);
-    border: 1px solid var(--separator);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12), 0 6px 20px rgba(0,0,0,0.06);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 2.2); */
+    background: transparent; /* visual styling handled by .tab-group */
 }
 
 @keyframes slideUp {
     from {
-        transform: translateX(-50%) translateY(100px);
+        transform: translateX(-0%) translateY(100px);
         opacity: 0;
     }
 
     to {
-        transform: translateX(-50%) translateY(0);
+        transform: translateX(-0%) translateY(0);
         opacity: 1;
     }
 }
@@ -1819,7 +1817,7 @@ body.settings-open .tab-bar { display: none !important; }
 /* Responsive Design */
 @media (max-width: 768px) {
     .header h1 {
-        font-size: 28px;
+        font-size: 48px; /* larger mobile title similar to iOS Settings */
     }
 
     .summary {
