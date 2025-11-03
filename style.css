@@ -284,13 +284,7 @@ body {
     justify-content: center;
     box-shadow: 0 8px 22px rgba(0,0,0,0.12);
     cursor: pointer;
-    margin-right: 12px;
     border: 1px solid rgba(0,0,0,0.06);
-}
-/* right-side variant */
-.nav-action-btn.right {
-    margin-left: 12px;
-    margin-right: 0;
 }
 
 .nav-action-btn svg { width: 20px; height: 20px; color: var(--text-secondary); }
@@ -339,7 +333,7 @@ body {
 
 .tab-bar-container .nav-action-btn.right {
     position: absolute;
-    right: -38px; /* slightly closer for compact pill */
+    right: -40px; /* slightly closer for compact pill */
     top: 50%;
     transform: translateY(-50%);
     z-index: 1210;
@@ -747,7 +741,7 @@ body.settings-open .tab-bar { display: none !important; }
    - Lower the bar slightly for better thumb reach on tall devices */
 .tab-bar {
     bottom: calc(22px + var(--safe-area-bottom)) !important;
-    left: 45% !important;
+    left: 42.5% !important;
     transform: translateX(-50%) !important;
     right: auto !important;
     width: auto !important;
