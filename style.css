@@ -211,7 +211,7 @@ body {
     inset: 0; /* cover full header */
     pointer-events: none;
     opacity: 0;
-    transition: opacity 220ms ease, transform 220ms ease;
+    /* transition: opacity 220ms ease, transform 220ms ease; */
     transform: translateY(6px);
     border-radius: inherit;
 }
@@ -226,14 +226,16 @@ body {
 }
 
 .header.small h1 {
-    font-size: 20px; /* consistent with compact navigation titles */
+    /* Shrink title on collapse to match iOS: reduce font-size but keep color/opacity. */
+    font-size: 20px;
     font-weight: 700;
-    transition: font-size 220ms ease;
+    /* transition: font-size 180ms step-end, transform 180ms linear; */
     color: var(--text-primary);
+    /* opacity: 1; */
 }
 
 .header.small::after {
-    opacity: 1;
+    /* opacity: 1; */
     transform: translateY(0);
 }
 
@@ -307,8 +309,8 @@ body {
     position: fixed;
     left: 50%;
     transform: translateX(-50%);
-    /* move closer to the bottom for iPhone screens */
-    bottom: calc(20px + var(--safe-area-bottom));
+    /* move further down so it sits lower on iPhones */
+    bottom: calc(22px + var(--safe-area-bottom));
     z-index: 1200;
     display: flex;
     align-items: center;
@@ -368,7 +370,7 @@ body {
     padding: 12px 28px;
     min-width: 120px;
     background: transparent; /* sit on top of the group surface */
-    border-radius: 12px;
+    border-radius: 22px;
     border: none;
     color: var(--text-primary);
     font-weight: 700;
@@ -376,7 +378,7 @@ body {
 
 .tab-btn.active {
     /* subtle emphasis for active tab */
-    background: rgba(0,0,0,0.06);
+    background: var(--bg-secondary);
 }
 
 .tab-btn:active { transform: translateY(0); }
@@ -387,6 +389,7 @@ body.settings-open .tab-bar { display: none !important; }
 @media (prefers-color-scheme: dark) {
     .tab-bar .nav-action-btn { border: 1px solid rgba(255,255,255,0.06); }
     .tab-bar .tab-bar-inner { border: 1px solid rgba(255,255,255,0.06); }
+    .tab-btn.active { background: var(--system-gray5); }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -733,6 +736,66 @@ body.settings-open .tab-bar { display: none !important; }
     button:active,
     .expense-item:active {
         transform: scale(0.98);
+    }
+}
+
+/* -------------------------- */
+/* Tab-bar fitting and overrides (final tuning)
+   - Force a max width suitable for iPhone app chrome (402px)
+   - Ensure the pill is centered and the inner tabs flex to fit
+   - Keep only the RIGHT action bubble (settings), remove the left bubble
+   - Lower the bar slightly for better thumb reach on tall devices */
+.tab-bar {
+    bottom: calc(22px + var(--safe-area-bottom)) !important;
+    left: 45% !important;
+    transform: translateX(-50%) !important;
+    right: auto !important;
+    width: auto !important;
+}
+
+.tab-bar-container {
+    max-width: 402px; /* app max width (iPhone 16 Pro app width) */
+    width: 100%;
+    margin: 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 6px 12px; /* keep room so bubble can overlap visually */
+}
+
+.tab-group {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+    padding: 6px 8px;
+    align-items: center;
+    justify-content: center;
+}
+
+.tab-btn {
+    flex: 1 1 auto;
+    min-width: 0; /* allow shrinking so three tabs fit */
+    padding: 6px 8px;
+    font-size: 14px;
+}
+
+/* Remove left bubble, keep the right one */
+.tab-bar-container .nav-action-btn:first-of-type {
+    display: none !important;
+}
+.tab-bar-container .nav-action-btn.right {
+    display: inline-flex !important;
+}
+
+@media (max-width: 420px) {
+    .tab-bar {
+        bottom: calc(50px + var(--safe-area-bottom)) !important;
+    }
+
+    .tab-btn {
+        font-size: 13px;
+        padding: 6px 6px;
     }
 }
 
@@ -1609,7 +1672,7 @@ body.settings-open .tab-bar { display: none !important; }
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: var(--bg-primary);
+    background: var(--bg-secondary);
     border-radius: 20px;
     padding: 0;
     max-width: 600px;
