@@ -40,6 +40,8 @@
     /* Safe Area */
     --safe-area-top: env(safe-area-inset-top);
     --safe-area-bottom: env(safe-area-inset-bottom);
+    /* Tab bar bottom position (single control for responsive positioning) */
+    --tab-bar-bottom: 10px;
 }
 
 /* Dark Mode Override */
@@ -229,7 +231,7 @@ body {
     /* Shrink title on collapse to match iOS: reduce font-size but keep color/opacity. */
     font-size: 20px;
     font-weight: 700;
-    /* transition: font-size 180ms step-end, transform 180ms linear; */
+    /* transition: font-size 180ms ease, transform 180ms ease; */
     color: var(--text-primary);
     /* opacity: 1; */
 }
@@ -273,11 +275,85 @@ body {
     display: none; /* hide header settings button — settings now live in nav bubbles */
 }
 
-/* Nav action button (circular) inside the liquid glass nav bar */
+
+/* ================================= */
+/* NAVIGATION TAB BAR */
+/* ================================= */
+
+.tab-bar {
+    position: fixed;
+    bottom: var(--tab-bar-bottom);
+    left: 0;
+    right: 0; 
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+
+    animation: slideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateX(-0%) translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(-0%) translateY(0);
+        opacity: 1;
+    }
+}
+
+.tab-bar-container {
+    max-width: 402px;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 8px 30px; 
+    border-radius: 999px;
+    background: transparent; /* leave visual styling to inner group and bubbles */
+}
+
+
+/* Ensure the bubbles use a subtle border similar to the pill but remain independent */
+.tab-bar-container .nav-action-btn {
+    z-index: 1210;
+    /* display: flex; */
+    backdrop-filter: blur(6px);
+}
+
+/* The centered group of three tabs should be its own inner pill so it reads as the primary control
+   while the two circular action bubbles sit outside it */
+.tab-group {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    /* gap: 18px;  */
+    padding: 5px; 
+    justify-content: center;
+
+
+    border-radius: 999px;
+    background: var(--card-bg);
+    border: 1px solid var(--separator);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+
+
+/* Nav action button (circular) outside the nav bar */
 .nav-action-btn {
-    width: 52px;
-    height: 52px;
-    border-radius: 26px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
     background: var(--card-bg);
     display: inline-flex;
     align-items: center;
@@ -285,10 +361,12 @@ body {
     box-shadow: 0 8px 22px rgba(0,0,0,0.12);
     cursor: pointer;
     border: 1px solid rgba(0,0,0,0.06);
+    flex-shrink: 0; /* Prevent shrinking */
+    flex-grow: 0;   /* Prevent growing */
 }
 
 .nav-action-btn svg { width: 20px; height: 20px; color: var(--text-secondary); }
-/* make the circular buttons look like liquid glass bubbles */
+
 .nav-action-btn {
     border: 1px solid rgba(0,0,0,0.06);
     backdrop-filter: blur(6px);
@@ -296,75 +374,16 @@ body {
 
 .nav-action-btn { color: var(--text-secondary); }
 
-/* Make the nav pill container a positioned element so we can place the action bubbles outside of the pill
-   visually while keeping the same look (border/backdrop). The bubbles are absolutely positioned circles
-   that sit half-overlapping the nav pill. This separates their border from the pill's rounded border. */
-.tab-bar {
-    position: fixed;
-    left: 50%;
-    transform: translateX(-50%);
-    /* move further down so it sits lower on iPhones */
-    bottom: calc(22px + var(--safe-area-bottom));
-    z-index: 1200;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: auto;
-}
 
-.tab-bar-container {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 28px; /* extra horizontal padding so bubbles sit outside */
-    border-radius: 999px;
-    background: transparent; /* leave visual styling to inner group and bubbles */
-}
 
-/* Position action bubbles so they visually sit outside the pill, with matching border & blur */
-.tab-bar-container .nav-action-btn:first-of-type {
-    position: absolute;
-    left: -38px; /* slightly closer for compact pill */
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 1210;
-}
-
-.tab-bar-container .nav-action-btn.right {
-    position: absolute;
-    right: -40px; /* slightly closer for compact pill */
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 1210;
-}
-
-/* Ensure the bubbles use a subtle border similar to the pill but remain independent */
-.tab-bar-container .nav-action-btn {
-    backdrop-filter: blur(6px);
-}
-
-/* The centered group of three tabs should be its own inner pill so it reads as the primary control
-   while the two circular action bubbles sit outside it */
-.tab-group {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px; /* tighter gap so tab labels sit closer */
-    padding: 6px 10px; /* reduce overall pill padding */
-    border-radius: 999px;
-    background: var(--card-bg);
-    border: 1px solid var(--separator);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-}
+/* Individual tab buttons inside the tab group */
 
 .tab-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px 28px;
-    min-width: 120px;
+    flex : 1 1 auto;
+    padding: 12px;
+    min-width: 0;
     background: transparent; /* sit on top of the group surface */
-    border-radius: 22px;
+    border-radius: 30px;
     border: none;
     color: var(--text-primary);
     font-weight: 700;
@@ -390,6 +409,43 @@ body.settings-open .tab-bar { display: none !important; }
     .nav-action-btn { border: 1px solid rgba(255,255,255,0.06); box-shadow: 0 6px 18px rgba(0,0,0,0.5); }
 }
 
+/* ================================= */
+/* RESPONSIVE DESIGN (TAB BAR) */
+/* ================================= */
+
+/* .tab-bar-container {
+    max-width: 402px;
+    width: 100%;
+    margin: 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    
+}
+
+.tab-group {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+    padding: 5px 5px;
+    align-items: center;
+    justify-content: center;
+}
+
+.tab-btn {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 12px 14px;
+    font-size: 15px;
+    font-weight: 500;
+} */
+
+
+
+
+
+/* 
 .close:hover {
     background: var(--system-gray4);
     transform: translateY(-50%) scale(1.1);
@@ -420,7 +476,10 @@ body.settings-open .tab-bar { display: none !important; }
 
 .settings-content {
     padding: 16px;
-}
+} */
+
+
+
 
 /* ================================= */
 /* FORM INPUT COMPONENTS */
@@ -650,16 +709,15 @@ body.settings-open .tab-bar { display: none !important; }
     transform: scale(0.95);
 }
 
-/* ================================= */
-/* RESPONSIVE DESIGN */
-/* ================================= */
 
-@media (max-width: 768px) {
+
+
+/* @media (max-width: 768px) {
     .header h1 {
         font-size: 36px; /* larger mobile title similar to iOS Settings */
-    }
+    /* }  */
 
-    .summary-cards {
+    /* .summary-cards {
         grid-template-columns: 1fr;
     }
 
@@ -694,9 +752,9 @@ body.settings-open .tab-bar { display: none !important; }
     .export-import button {
         width: 100%;
     }
-}
+} */
 
-@media (min-width: 769px) {
+/* @media (min-width: 769px) {
     .container {
         padding: 0 40px;
     }
@@ -708,92 +766,48 @@ body.settings-open .tab-bar { display: none !important; }
     .summary-cards {
         grid-template-columns: repeat(3, 1fr);
     }
-}
+} */
 
 /* ================================= */
 /* IOS ENHANCEMENTS */
 /* ================================= */
 
-@supports (padding: max(0px)) {
+/* @supports (padding: max(0px)) {
     .header {
         padding-top: max(20px, var(--safe-area-top));
     }
 
     .tab-bar {
-        bottom: max(50px, calc(10px + var(--safe-area-bottom)));
+        bottom: 500px;
     }
-}
+} */
 
 /* Haptic feedback simulation */
-@media (hover: hover) {
+/* @media (hover: hover) {
 
     button:active,
     .expense-item:active {
         transform: scale(0.98);
     }
-}
+} */
 
 /* -------------------------- */
-/* Tab-bar fitting and overrides (final tuning)
-   - Force a max width suitable for iPhone app chrome (402px)
-   - Ensure the pill is centered and the inner tabs flex to fit
-   - Keep only the RIGHT action bubble (settings), remove the left bubble
-   - Lower the bar slightly for better thumb reach on tall devices */
-.tab-bar {
-    bottom: calc(22px + var(--safe-area-bottom)) !important;
-    left: 42.5% !important;
-    transform: translateX(-50%) !important;
-    right: auto !important;
-    width: auto !important;
-}
-
-.tab-bar-container {
-    max-width: 402px; /* app max width (iPhone 16 Pro app width) */
-    width: 100%;
-    margin: 0 auto;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    padding: 6px 12px; /* keep room so bubble can overlap visually */
-}
-
-.tab-group {
-    width: 100%;
-    display: flex;
-    gap: 8px;
-    padding: 6px 8px;
-    align-items: center;
-    justify-content: center;
-}
-
-.tab-btn {
-    flex: 1 1 auto;
-    min-width: 0; /* allow shrinking so three tabs fit */
-    padding: 6px 8px;
-    font-size: 14px;
-}
-
-/* Remove left bubble, keep the right one */
-.tab-bar-container .nav-action-btn:first-of-type {
-    display: none !important;
-}
-.tab-bar-container .nav-action-btn.right {
-    display: inline-flex !important;
-}
-
-@media (max-width: 420px) {
-    .tab-bar {
-        bottom: calc(50px + var(--safe-area-bottom)) !important;
-    }
-
-    .tab-btn {
-        font-size: 13px;
-        padding: 6px 6px;
-    }
-}
+/* Tab-bar layout & sizing (consolidated)
+   - Use the --tab-bar-bottom CSS variable for positioning so a single change
+     controls the vertical offset across responsive breakpoints.
+   - Leave tab-bar-container, tab-group and tab-btn sizing intact below. */
 
 
+
+
+/* Small-screen override: set the variable to a compact value for small iPhones */
+/* @media (max-width: 420px) {
+    :root { --tab-bar-bottom: 70px; }
+    .tab-btn { font-size: 13px; padding: 6px 6px; }
+} */
+
+
+ /* VAD ANVÄNDS DEtTA FÖR??? */
 .settings-btn:hover {
     background: var(--system-gray4);
     transform: translateY(-50%) scale(1.05);
@@ -830,12 +844,12 @@ body.settings-open .tab-bar { display: none !important; }
 @keyframes viewSlideIn {
     from {
         opacity: 0;
-        transform: translateX(30px);
+        transform: translateY(10px);
     }
 
     to {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0);
     }
 }
 
@@ -1606,50 +1620,10 @@ body.settings-open .tab-bar { display: none !important; }
     transform: scale(0.95);
 }
 
+
 /* ================================= */
-/* NAVIGATION TAB BAR */
+/* SETTINGS POPUP ???? */
 /* ================================= */
-
-.tab-bar {
-    position: fixed !important;
-    bottom: calc(80px + var(--safe-area-bottom)); /* move further down */
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: center; /* center the tab-bar container */
-    z-index: 3000; /* above most content, below modal */
-    animation: slideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    will-change: transform;
-    transform: translateZ(0);
-}
-
-.tab-bar-container {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 6px 20px; /* reduced padding so pill is narrower on small screens */
-    border-radius: 999px;
-    background: transparent; /* visual styling handled by .tab-group */
-}
-
-@keyframes slideUp {
-    from {
-        transform: translateX(-0%) translateY(100px);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateX(-0%) translateY(0);
-        opacity: 1;
-    }
-}
-
-/* Liquid glass layers removed — inner pill styling handled by .tab-bar-container */
-
-/* (Liquid glass layers removed) The nav now uses a simpler pill + bubbles layout.
-   The inner pill is styled via .tab-bar-container and the centered buttons via
-   .tab-bar-container .liquidGlass-text > div. */
 
 @keyframes modalFadeIn {
     from {
@@ -1872,17 +1846,17 @@ body.settings-open .tab-bar { display: none !important; }
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
     .header h1 {
-        font-size: 48px; /* larger mobile title similar to iOS Settings */
-    }
+        font-size: 48px; larger mobile title similar to iOS Settings */
+    /* }
 
     .summary {
         grid-template-columns: 1fr;
     }
 
     .tab-bar {
-        bottom: calc(40px + var(--safe-area-bottom));
+        bottom: 10px;
     }
 
     .tab-btn {
@@ -1926,24 +1900,24 @@ body.settings-open .tab-bar { display: none !important; }
     .summary {
         grid-template-columns: repeat(3, 1fr);
     }
-}
+} */
 
 /* iOS-specific enhancements */
-@supports (padding: max(0px)) {
+/* @supports (padding: max(0px)) {
     .header {
         padding-top: max(20px, var(--safe-area-top));
     }
 
     .tab-bar {
-        bottom: max(50px, calc(10px + var(--safe-area-bottom)));
+        bottom: 10px;
     }
-}
+} */
 
 /* Haptic feedback simulation */
-@media (hover: hover) {
+/* @media (hover: hover) {
 
     button:active,
     .expense-item:active {
         transform: scale(0.98);
     }
-}
+} */
