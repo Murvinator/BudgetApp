@@ -553,7 +553,8 @@ function updateChartComponent() {
 
   if (otherTotal > 0) {
     mainExpenses.push({
-      name: `Övrigt (${otherItems.length} poster)`,
+      name: `Övrigt`,
+      // (${otherItems.length} poster)
       amount: otherTotal,
       category: "Övrigt",
     });
@@ -653,6 +654,7 @@ function updateChartComponent() {
 function updateVariableExpensesMini() {
   const miniContainer = document.getElementById("variableExpensesMini");
   const miniContent = document.getElementById("variableExpensesMiniContent");
+  const miniTitle = document.getElementById("variableExpensesMiniTitle");
 
   if (budgetData.variableExpenses.length === 0) {
     miniContainer.style.display = "none";
@@ -660,6 +662,16 @@ function updateVariableExpensesMini() {
   }
 
   miniContainer.style.display = "block";
+  
+  // Set title to current month name
+  const monthName = new Date().toLocaleString('sv-SE', { month: 'long' });
+  const capitalizedMonth = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+  miniTitle.textContent = capitalizedMonth;
+  
+  // Make the entire widget clickable
+  miniContainer.style.cursor = "pointer";
+  miniContainer.onclick = () => showView('budget-view', document.querySelectorAll('.tab-btn')[1]);
+  
   miniContent.innerHTML = "";
 
   const monthKey = getCurrentMonthKey();
@@ -884,9 +896,9 @@ function updateMonthlyView() {
       remainingDiv.className = `expense-item remaining-row`;
       remainingDiv.innerHTML = `
             <div class="expense-info">
-                <div class="expense-name" style="font-style: italic;">Kvar att betala</div>
+                <div class="expense-name" style="font-style: normal;">Kvar att betala</div>
             </div>
-            <div class="expense-amount" style="font-style: italic;">${remainingAmount.toLocaleString(
+            <div class="expense-amount" style="font-style: normal;">${remainingAmount.toLocaleString(
               "sv-SE"
             )} kr</div>
         `;

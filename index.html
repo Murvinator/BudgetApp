@@ -54,8 +54,7 @@
                 <!-- Variable Expenses Mini Overview -->
                 <div class="variable-expenses-mini" id="variableExpensesMini" style="display: none;">
                     <div class="variable-mini-header">
-                        <h3>Månadens budget</h3>
-                        <span class="view-all-link" onclick="showView('budget-view', document.querySelectorAll('.tab-btn')[1])">Se alla →</span>
+                        <h3 id="variableExpensesMiniTitle">Månadens budget</h3>
                     </div>
                     <div id="variableExpensesMiniContent"></div>
                 </div>
@@ -90,7 +89,7 @@
 
                 <!-- Month Controls Component -->
                 <div class="month-controls">
-                    <button class="reset-btn" onclick="resetCurrentMonth()">Återställ alla</button>
+                    <button class="reset-btn" onclick="resetCurrentMonth()">Återställ checkboxar</button>
                 </div>
             </div>
 
@@ -100,7 +99,7 @@
                 <!-- Variable Expenses Budget Tracking -->
                 <div class="budget-summary-card">
                     <div class="budget-summary-header">
-                        <h3>Månadens budget</h3>
+
                         <div class="month-display" id="currentMonth"></div>
                     </div>
                     <div class="budget-summary-stats">
@@ -167,12 +166,14 @@
     <!-- ================================= -->
     <div id="settings-view" class="view">
         <div class="settings-header">
-            <button class="back-btn" onclick="goBackFromSettings()" title="Tillbaka">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <polyline points="15 18 9 12 15 6"></polyline>
-                </svg>
-            </button>
-            <h2>Inställningar</h2>
+            <div class="settings-header-left">
+                <button class="back-btn" onclick="goBackFromSettings()" title="Tillbaka">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+                <h2>Inställningar</h2>
+            </div>
         </div>
         <div class="settings-root">
 
