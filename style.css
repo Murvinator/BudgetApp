@@ -185,11 +185,16 @@ body {
     text-align: left;
     /* Prevent header from bouncing */
     overscroll-behavior: none;
+    /* Extend header to cover status bar area on iOS */
+    padding-top: calc(20px + var(--safe-area-top));
 }
 
 @media (prefers-color-scheme: dark) {
     .header {
         background: #000;
+        /* Remove backdrop-filter in dark mode to ensure solid black */
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
     }
 }
 
