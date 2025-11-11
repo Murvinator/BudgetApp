@@ -58,6 +58,25 @@ const months = [
   "December",
 ];
 
+// Track last non-settings view so Settings can breadcrumb back to it
+let lastView = 'overview-view';
+
+function getButtonForView(viewName) {
+  const tabs = document.querySelectorAll('.tab-btn');
+  if (!tabs || tabs.length === 0) return null;
+  if (viewName === 'overview-view') return tabs[0];
+  if (viewName === 'budget-view') return tabs[1];
+  if (viewName === 'monthly-view') return tabs[2];
+  return tabs[0];
+}
+
+function goBackFromSettings() {
+  // fallback to overview if lastView is not set
+  const target = lastView || 'overview-view';
+  const button = getButtonForView(target);
+  showView(target, button);
+}
+
 // Load data from localStorage
 function loadData() {
   const saved = localStorage.getItem("budgetApp");
@@ -158,7 +177,8 @@ function importData(event) {
           migrateDebtPaymentsAfterLoad();
           saveData();
           updateAllViews();
-          closeSettings();
+          // After importing, switch back to the main overview view
+          showView('overview-view', document.querySelector('.tab-btn'));
           alert("Data importerad!");
         }
       } catch (error) {
@@ -205,6 +225,13 @@ function migrateDebtsFromExpenses() {
 /* ================================= */
 
 function showView(viewName, button) {
+  // Remember current active view (so settings can breadcrumb back)
+  const currentActive = document.querySelector('.view.active');
+  const previous = currentActive ? currentActive.id : null;
+  if (previous && previous !== viewName && previous !== 'settings-view') {
+    lastView = previous;
+  }
+
   // Update view visibility
   document
     .querySelectorAll(".view")
@@ -212,8 +239,9 @@ function showView(viewName, button) {
   document.getElementById(viewName).classList.add("active");
 
   // Update tab button states
+  // Clear active state from tab buttons and nav action buttons (e.g. settings bubble)
   document
-    .querySelectorAll(".tab-btn")
+    .querySelectorAll(".tab-btn, .nav-action-btn")
     .forEach((b) => b.classList.remove("active"));
   if (button) button.classList.add("active");
 
@@ -224,6 +252,8 @@ function showView(viewName, button) {
     updateMonthlyView();
   } else if (viewName === "budget-view") {
     updateBudgetView();
+  } else if (viewName === "settings-view") {
+    updateSettingsView();
   }
 }
 
@@ -231,31 +261,10 @@ function showView(viewName, button) {
 /* SETTINGS MODAL FUNCTIONS */
 /* ================================= */
 
-function openSettings() {
-  document.getElementById("settingsModal").style.display = "block";
-  // mark body so UI can hide the tab-bar while settings are open
-  document.body.classList.add('settings-open');
-  // Prevent background scrolling on iOS-friendly way
-  const scrollY = window.scrollY;
-  document.body.dataset.scrollY = scrollY;
-  document.body.style.position = "fixed";
-  document.body.style.top = `-${scrollY}px`;
-  document.body.style.width = "100%";
-  updateSettingsView();
-}
-
-function closeSettings() {
-  document.getElementById("settingsModal").style.display = "none";
-  document.body.classList.remove('settings-open');
-  // Restore background scrolling and position
-  const scrollY = document.body.dataset.scrollY || 0;
-  document.body.style.position = "";
-  document.body.style.top = "";
-  document.body.style.width = "";
-  window.scrollTo(0, parseInt(scrollY || "0"));
-  // Refresh all views to show any changes made in settings
-  updateAllViews();
-}
+/* NOTE: Settings were previously implemented as a modal (openSettings/closeSettings).
+   The UI now uses a normal view with id `settings-view`. Use `showView('settings-view')`
+   to navigate to settings and `showView('overview-view')` (or another view) to leave it.
+*/
 
 /* ================================= */
 /* CATEGORY MANAGEMENT */
@@ -804,8 +813,12 @@ function updateMonthlyView() {
     const categoryList = document.createElement("div");
     categoryList.className = "category-list";
 
+    // Store indices of expenses in this category for later reference
+    const categoryExpenseIndices = [];
+
     categoryExpenses.forEach((expense) => {
       const globalIndex = budgetData.expenses.findIndex((e) => e === expense);
+      categoryExpenseIndices.push(globalIndex);
       const isPaid =
         budgetData.monthlyStatus["current"] &&
         budgetData.monthlyStatus["current"][globalIndex];
@@ -823,16 +836,16 @@ function updateMonthlyView() {
                 <input type="checkbox" class="checkbox" ${
                   isPaid ? "checked" : ""
                 } 
-                       onchange="togglePayment('current', ${globalIndex}, this)">
+                       onchange="togglePaymentFromCheckbox('current', ${globalIndex}, this)">
             `;
 
-      // Add click handler to toggle checkbox when clicking on the expense item
+      // Add click handler to toggle checkbox when clicking anywhere on the expense item
       expenseDiv.addEventListener("click", function (e) {
         // Don't trigger if clicking directly on the checkbox
         if (e.target.type !== "checkbox") {
           const checkbox = expenseDiv.querySelector(".checkbox");
           checkbox.checked = !checkbox.checked;
-          togglePayment("current", globalIndex, checkbox);
+          togglePaymentFromCheckbox("current", globalIndex, checkbox);
         }
       });
 
@@ -845,9 +858,43 @@ function updateMonthlyView() {
       0
     );
 
+    // Calculate paid amount for this category
+    let paidAmount = 0;
+    categoryExpenseIndices.forEach((idx) => {
+      const isPaid =
+        budgetData.monthlyStatus["current"] &&
+        budgetData.monthlyStatus["current"][idx];
+      if (isPaid) {
+        paidAmount += budgetData.expenses[idx].amount;
+      }
+    });
+
+    const remainingAmount = categoryTotal - paidAmount;
+    const anyPaid = paidAmount > 0;
+
+    // Check if remaining row already exists in the DOM (to detect first appearance)
+    const existingRemainingRow = categoryList.querySelector(".remaining-row");
+    const isFirstAppearance = !existingRemainingRow && anyPaid && remainingAmount > 0;
+
+    // Create "Kvar att betala" (remaining to pay) row if any items are paid
+    if (anyPaid && remainingAmount > 0) {
+      const remainingDiv = document.createElement("div");
+      remainingDiv.className = `expense-item remaining-row ${isFirstAppearance ? "animate-in" : ""}`;
+      remainingDiv.innerHTML = `
+            <div class="expense-info">
+                <div class="expense-name" style="font-style: italic;">Kvar att betala</div>
+            </div>
+            <div class="expense-amount" style="font-style: italic;">${remainingAmount.toLocaleString(
+              "sv-SE"
+            )} kr</div>
+        `;
+      categoryList.appendChild(remainingDiv);
+    }
+
     // Create total row
+    const allPaid = remainingAmount === 0 && anyPaid;
     const totalDiv = document.createElement("div");
-    totalDiv.className = "expense-item category-total";
+    totalDiv.className = `expense-item category-total ${allPaid ? "paid" : ""}`;
     totalDiv.innerHTML = `
             <div class="expense-info">
                 <div class="expense-name" style="font-weight: 600;">Totalt</div>
@@ -878,6 +925,12 @@ function togglePayment(month, expenseIndex, checkbox) {
   }
 
   saveData();
+  // Refresh the view so "Kvar att betala" row and total row update
+  updateMonthlyView();
+}
+
+function togglePaymentFromCheckbox(month, expenseIndex, checkbox) {
+  togglePayment(month, expenseIndex, checkbox);
 }
 
 function resetCurrentMonth() {
@@ -1620,24 +1673,39 @@ function updateAllViews() {
   updateSettingsView();
 }
 
+// Setup settings nav button behavior: if already in settings-view, pressing it goes back like breadcrumb.
+function setupSettingsButton() {
+  const btn = document.querySelector('.nav-action-btn');
+  if (!btn) return;
+  btn.onclick = function (e) {
+    e.preventDefault();
+    const settingsView = document.getElementById('settings-view');
+    if (settingsView && settingsView.classList.contains('active')) {
+      goBackFromSettings();
+    } else {
+      showView('settings-view', btn);
+    }
+  };
+}
+
 /* ================================= */
 /* EVENT HANDLERS & INITIALIZATION */
 /* ================================= */
 
-// Close modal when clicking outside
+// Close debt payment modal when clicking outside it
 window.onclick = function (event) {
-  const modal = document.getElementById("settingsModal");
-  if (event.target === modal) {
-    closeSettings();
+  const debtModal = document.getElementById('debtPaymentModal');
+  if (debtModal && event.target === debtModal) {
+    closeDebtPaymentModal();
   }
 };
 
-// Handle escape key
+// Handle escape key for closing debt payment modal
 document.addEventListener("keydown", function (event) {
   if (event.key === "Escape") {
-    const modal = document.getElementById("settingsModal");
-    if (modal.style.display === "block") {
-      closeSettings();
+    const debtModal = document.getElementById('debtPaymentModal');
+    if (debtModal && debtModal.style.display === 'block') {
+      closeDebtPaymentModal();
     }
   }
 });
@@ -1661,4 +1729,6 @@ window.addEventListener("DOMContentLoaded", function () {
   loadData();
   updateOverviewView();
   updateSettingsView();
+  // Wire the settings nav button so clicking it while already in settings goes back
+  setupSettingsButton();
 });

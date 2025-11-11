@@ -135,10 +135,10 @@
         <div class="tab-bar-container">
                 <div class="tab-group">
                     <button type="button" class="tab-btn active" onclick="showView('overview-view', this)">Översikt</button>
-                    <button type="button" class="tab-btn" onclick="showView('budget-view', this)">Budget</button>
+                    <button type="button" class="tab-btn" onclick="showView('budget-view', this)">Rörligt</button>
                     <button type="button" class="tab-btn" onclick="showView('monthly-view', this)">Checklista</button>
                 </div>
-                <button type="button" class="nav-action-btn" onclick="openSettings()">
+                <button type="button" class="nav-action-btn" onclick="showView('settings-view', this)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
                         <circle cx="12" cy="12" r="3" />
@@ -149,94 +149,96 @@
     </div>
 
     <!-- ================================= -->
-    <!-- SETTINGS MODAL -->
+    <!-- SETTINGS VIEW (converted from modal) -->
     <!-- ================================= -->
-    <div id="settingsModal" class="modal" style="display:none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Inställningar</h2>
-                <button type="button" class="close" onclick="closeSettings()">&times;</button>
+    <div id="settings-view" class="view">
+        <div class="settings-header">
+            <button class="back-btn" onclick="goBackFromSettings()" title="Tillbaka">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+            <h2>Inställningar</h2>
+        </div>
+        <div class="settings-root">
+
+            <!-- Variable Expenses Settings Section -->
+            <div class="settings-section">
+                <h3>Varierande utgifter</h3>
+                <div class="settings-content">
+                    <div class="input-group">
+                        <input type="text" id="newVariableExpenseName" placeholder="Namn">
+                        <input type="number" id="newVariableExpenseBudget" placeholder="Belopp">
+                        <button onclick="addVariableExpense()">Lägg till</button>
+                    </div>
+                    <div id="variableExpensesList"></div>
+                </div>
             </div>
-            <div class="modal-body">
 
-                <!-- Variable Expenses Settings Section -->
-                <div class="settings-section">
-                    <h3>Varierande utgifter (Budget)</h3>
-                    <div class="settings-content">
-                        <div class="input-group">
-                            <input type="text" id="newVariableExpenseName" placeholder="Namn (t.ex. Mat)">
-                            <input type="number" id="newVariableExpenseBudget" placeholder="Budget">
-                            <button onclick="addVariableExpense()">Lägg till</button>
-                        </div>
-                        <div id="variableExpensesList"></div>
+            <!-- Expense Settings Section -->
+            <div class="settings-section">
+                <h3>Fasta utgifter</h3>
+                <div class="settings-content">
+                    <div class="input-group">
+                        <input type="text" id="newExpenseName" placeholder="Namn">
+                        <input type="number" id="newExpenseAmount" placeholder="Belopp">
+                    </div>
+                    <div class="input-group">
+                        <select id="newExpenseCategory"></select>
+                        <button onclick="addExpense()">Lägg till</button>
+                    </div>
+                    <div id="expensesList"></div>
+                </div>
+            </div>
+
+            <!-- Category Settings Section -->
+            <div class="settings-section">
+                <h3>Kategorier</h3>
+                <div class="settings-content">
+                    <div class="input-group">
+                        <input type="text" id="newCategoryName" placeholder="Ny kategori">
+                        <button onclick="addCategory()">Lägg till</button>
+                    </div>
+                    <div id="categoryList"></div>
+                </div>
+            </div>
+
+            <!-- Income Settings Section -->
+            <div class="settings-section">
+                <h3>Inkomster</h3>
+                <div class="settings-content">
+                    <div class="input-group">
+                        <input type="text" id="newIncomeName" placeholder="Namn">
+                        <input type="number" id="newIncomeAmount" placeholder="Belopp">
+                        <button onclick="addIncome()">Lägg till</button>
+                    </div>
+                    <div id="incomeList"></div>
+                </div>
+            </div>
+
+            <!-- Debts (Skulder) Settings Section -->
+            <div class="settings-section">
+                <h3>Skulder</h3>
+                <div class="settings-content">
+                    <div class="input-group">
+                        <input type="text" id="newDebtName" placeholder="Namn">
+                        <input type="number" id="newDebtAmount" placeholder="Belopp">
+                        <button onclick="addDebt()">Lägg till</button>
+                    </div>
+                    <div id="debtsList"></div>
+                </div>
+            </div>
+
+            <!-- Data Import/Export Section -->
+            <div class="settings-section">
+                <h3>Data</h3>
+                <div class="settings-content">
+                    <div class="export-import">
+                        <button onclick="exportData()">Exportera Data</button>
+                        <button onclick="document.getElementById('importFile').click()">Importera Data</button>
+                        <input type="file" id="importFile" class="file-input" accept=".json" onchange="importData(event)">
                     </div>
                 </div>
-
-                <!-- Expense Settings Section -->
-                <div class="settings-section">
-                    <h3>Fasta utgifter</h3>
-                    <div class="settings-content">
-                        <div class="input-group">
-                            <input type="text" id="newExpenseName" placeholder="Namn">
-                            <input type="number" id="newExpenseAmount" placeholder="Belopp">
-                            <select id="newExpenseCategory"></select>
-                            <button onclick="addExpense()">Lägg till</button>
-                        </div>
-                        <div id="expensesList"></div>
-                    </div>
-                </div>
-
-                <!-- Category Settings Section -->
-                <div class="settings-section">
-                    <h3>Kategorier</h3>
-                    <div class="settings-content">
-                        <div class="input-group">
-                            <input type="text" id="newCategoryName" placeholder="Ny kategori">
-                            <button onclick="addCategory()">Lägg till</button>
-                        </div>
-                        <div id="categoryList"></div>
-                    </div>
-                </div>
-
-                <!-- Income Settings Section -->
-                <div class="settings-section">
-                    <h3>Inkomster</h3>
-                    <div class="settings-content">
-                        <div class="input-group">
-                            <input type="text" id="newIncomeName" placeholder="Namn">
-                            <input type="number" id="newIncomeAmount" placeholder="Belopp">
-                            <button onclick="addIncome()">Lägg till</button>
-                        </div>
-                        <div id="incomeList"></div>
-                    </div>
-                </div>
-
-                <!-- Debts (Skulder) Settings Section -->
-                <div class="settings-section">
-                    <h3>Skulder</h3>
-                    <div class="settings-content">
-                        <div class="input-group">
-                            <input type="text" id="newDebtName" placeholder="Namn (t.ex. Banklån)">
-                            <input type="number" id="newDebtAmount" placeholder="Belopp">
-                            <button onclick="addDebt()">Lägg till</button>
-                        </div>
-                        <div id="debtsList"></div>
-                    </div>
-                </div>
-
-                <!-- Data Import/Export Section -->
-                <div class="settings-section">
-                    <h3>Data</h3>
-                    <div class="settings-content">
-                        <div class="export-import">
-                            <button onclick="exportData()">Exportera Data</button>
-                            <button onclick="document.getElementById('importFile').click()">Importera Data</button>
-                            <input type="file" id="importFile" class="file-input" accept=".json"
-                                onchange="importData(event)">
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>

@@ -351,8 +351,8 @@ body {
 
 /* Nav action button (circular) outside the nav bar */
 .nav-action-btn {
-    width: 56px;
-    height: 56px;
+    width: 53px;
+    height: 53px;
     border-radius: 50%;
     background: var(--card-bg);
     display: inline-flex;
@@ -575,7 +575,7 @@ body.settings-open .tab-bar { display: none !important; }
     background: var(--system-blue);
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 16px;
     cursor: pointer;
     font-size: 15px;
     font-weight: 600;
@@ -854,6 +854,313 @@ body.settings-open .tab-bar { display: none !important; }
 }
 
 /* ================================= */
+/* SETTINGS VIEW STYLING */
+/* ================================= */
+
+#settings-view .settings-root {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px 20px 40px;
+}
+
+#settings-view .settings-header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom: 12px;
+}
+
+#settings-view .settings-header h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+}
+
+#settings-view .settings-header .close {
+    background: transparent;
+    border: none;
+    font-size: 26px;
+    line-height: 1;
+    padding: 6px 8px;
+    cursor: pointer;
+    color: var(--text-secondary);
+}
+
+#settings-view .settings-section {
+    background: var(--card-bg);
+    border-radius: 14px;
+    padding: 0;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    overflow: hidden;
+    border: 1px solid var(--separator);
+}
+
+#settings-view .settings-section h3 {
+    margin: 0;
+    padding: 14px 16px;
+    font-size: 17px;
+    font-weight: 700;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--separator);
+    color: var(--text-primary);
+}
+
+#settings-view .settings-content {
+    padding: 0;
+}
+
+#settings-view .settings-content .input-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 12px 16px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--separator);
+}
+
+#settings-view .settings-content .input-group:has(+ .input-group) {
+    border-bottom: none;
+    padding-bottom: 1px;
+}
+
+#settings-view .settings-content .input-group + .input-group {
+    border-top: none;
+    border-bottom: 1px solid var(--separator);
+    padding-top: 2px;
+    gap: 15px;
+}
+
+#settings-view .settings-content .input-group input[type="text"],
+#settings-view .settings-content .input-group input[type="number"],
+#settings-view .settings-content .input-group select {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--separator);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-width: 100px;
+    font-size: 15px;
+    flex: 1;
+    min-height: 38px;
+}
+
+#settings-view .settings-content .input-group input:focus,
+#settings-view .settings-content .input-group select:focus {
+    outline: none;
+    border-color: var(--system-blue);
+    background: var(--bg-primary);
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+}
+
+#settings-view .settings-content button {
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: none;
+    background: var(--system-blue);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 15px;
+    min-height: 38px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+#settings-view .settings-content button:active {
+    opacity: 0.8;
+}
+
+/* Uniform list items in settings */
+#settings-view .expense-item,
+#settings-view .category-item,
+#settings-view #incomeList > div,
+#settings-view #debtList > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--separator);
+    border-radius: 20px;
+    background: var(--bg-primary);
+    transition: all 0.15s ease;
+}
+
+/* #settings-view .expense-item:first-of-type,
+#settings-view .category-item:first-of-type,
+#settings-view #incomeList > div:first-of-type,
+#settings-view #debtList > div:first-of-type {
+    border-top: none;
+} */
+
+/* #settings-view .expense-item:last-of-type,
+#settings-view .category-item:last-of-type,
+#settings-view #incomeList > div:last-of-type,
+#settings-view #debtList > div:last-of-type {
+    border-bottom: none;
+} */
+
+/* #settings-view .expense-item:hover,
+#settings-view .category-item:hover,
+#settings-view #incomeList > div:hover,
+#settings-view #debtList > div:hover {
+    background: var(--bg-secondary);
+}
+
+#settings-view .expense-item:active,
+#settings-view .category-item:active {
+    background: var(--bg-secondary);
+} */
+
+#settings-view .expense-item .expense-info {
+    flex: 1;
+}
+
+#settings-view .expense-item .expense-name {
+    font-weight: 500;
+    font-size: 15px;
+}
+
+#settings-view .expense-item .expense-amount {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin: 0 12px 0 0;
+}
+
+/* Delete/Remove buttons in settings */
+#settings-view .delete-btn,
+#settings-view .expense-item .delete-btn,
+#settings-view .category-item .delete-btn {
+    background: var(--system-red);
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+#settings-view .delete-btn:active {
+    opacity: 0.8;
+}
+
+/* Export/Import buttons styling */
+#settings-view .export-import {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+#settings-view .export-import button {
+    flex: 1;
+    min-width: 130px;
+}
+
+/* Category item styling */
+#settings-view .category-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    /* border-bottom: 1px solid var(--separator); */
+    background: var(--bg-primary);
+}
+
+/* #settings-view .category-item:last-child {
+    border-bottom: none;
+} */
+
+#settings-view .category-item span {
+    font-weight: 500;
+    font-size: 15px;
+}
+
+/* Hide main header when settings view is active */
+/* #settings-view ~ .tab-bar ~ * + .header,
+#settings-view.active ~ .header {
+    display: none;
+}
+
+.view.active ~ .header {
+    display: block;
+}
+
+#settings-view.active ~ .header {
+    display: none;
+} */
+
+/* Settings view receives a custom sticky header positioned below main header */
+#settings-view .settings-header {
+    position: sticky;
+    top: 47px;
+    z-index: 99;
+    background: var(--bg-primary);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 20px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 0.5px solid var(--separator);
+}
+
+/* Back button styling (circular like nav-action) */
+.back-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--bg-secondary);
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--system-blue);
+    flex-shrink: 0;
+}
+
+.back-btn svg { width: 18px; height: 18px; }
+
+#settings-view .settings-header h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+    margin-right: 10px;
+    letter-spacing: -0.3px;
+}
+
+/* Adjust settings root to account for sticky header */
+#settings-view .settings-root {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Make small helper text/color for empty states inside settings */
+#settings-view .settings-content p { color: var(--text-tertiary); font-size: 14px; }
+
+/* Active style for the settings nav-action bubble (keeps it visually separate but highlighted) */
+.nav-action-btn.active {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    border: 1px solid var(--system-blue);
+    color: var(--system-blue);
+}
+
+/* Slightly tighten spacing for mobile */
+@media (max-width: 480px) {
+    #settings-view .settings-root { padding-left: 14px; padding-right: 14px; }
+    #settings-view .settings-section { padding: 12px; }
+    #settings-view .settings-header {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+}
+
+/* ================================= */
 /* SUMMARY CARDS COMPONENT */
 /* ================================= */
 
@@ -935,7 +1242,7 @@ body.settings-open .tab-bar { display: none !important; }
 .chart-component {
     background: var(--card-bg);
     border-radius: 20px;
-    padding: 32px;
+    padding: 5px 30px;
     margin-bottom: 32px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -1014,25 +1321,28 @@ body.settings-open .tab-bar { display: none !important; }
     text-decoration: line-through;
 }
 
+.expense-item.paid .expense-amount {
+    text-decoration: line-through;
+}
+
 /* ================================= */
 /* CATEGORY COMPONENTS */
 /* ================================= */
 
 .category-header {
-    background: var(--bg-secondary);
-    padding: 0;
-    margin-bottom: 8px;
-    border-radius: 12px;
+    background: transparent;
+    margin-bottom: 2px;
+    
 }
 
 .category-header h3 {
     padding: 16px 20px;
-    font-size: 15px;
-    font-weight: 400;
+    font-size: 17px;
+    font-weight: 700;
     color: var(--text-secondary);
     background: transparent;
     margin: 0;
-    text-transform: uppercase;
+    text-transform: capitalize;
 }
 
 .category-list {
@@ -1060,6 +1370,26 @@ body.settings-open .tab-bar { display: none !important; }
 
 .category-total .expense-amount {
     color: var(--text-primary);
+}
+
+.remaining-row {
+    background: var(--system-gray5);
+    border-top: 1px solid var(--separator);
+    padding: 12px 20px !important;
+}
+
+.remaining-row .expense-name {
+    color: var(--text-tertiary);
+    font-size: 15px;
+}
+
+.remaining-row .expense-amount {
+    color: var(--text-tertiary);
+    font-size: 15px;
+}
+
+.remaining-row.animate-in {
+    animation: slideDown 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
 /* ================================= */
@@ -1710,7 +2040,7 @@ body.settings-open .tab-bar { display: none !important; }
 .settings-section {
     margin-bottom: 24px;
     background: var(--bg-secondary);
-    border-radius: 12px;
+    border-radius: 24px;
     padding: 0;
     overflow: hidden;
 }
@@ -1726,12 +2056,12 @@ body.settings-open .tab-bar { display: none !important; }
 
 .settings-section h4 {
     padding: 12px 16px;
-    font-size: 15px;
-    font-weight: 400;
+    font-size: 16px;
+    font-weight: 600;
     color: var(--text-primary);
     border-bottom: 0.5px solid var(--separator);
     margin: 0;
-    text-transform: uppercase;
+    text-transform: capitalize;
 }
 
 .settings-content {
