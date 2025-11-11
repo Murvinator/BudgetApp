@@ -133,12 +133,26 @@
     <!-- ================================= -->
     <div class="tab-bar">
         <div class="tab-bar-container">
-                <div class="tab-group">
+
+                
+            
+
+                <div class="tab-group liquidGlass-wrapper">
+                    <!-- Liquid Glass layers -->
+                    <div class="liquidGlass-effect"></div>
+                    <div class="liquidGlass-tint"></div>
+                    <div class="liquidGlass-shine"></div>
+
                     <button type="button" class="tab-btn active" onclick="showView('overview-view', this)">Översikt</button>
                     <button type="button" class="tab-btn" onclick="showView('budget-view', this)">Rörligt</button>
                     <button type="button" class="tab-btn" onclick="showView('monthly-view', this)">Checklista</button>
                 </div>
-                <button type="button" class="nav-action-btn" onclick="showView('settings-view', this)">
+                <button type="button" class="nav-action-btn liquidGlass-wrapper" onclick="showView('settings-view', this)">
+                    <!-- Liquid Glass layers -->
+                    <div class="liquidGlass-effect"></div>
+                    <div class="liquidGlass-tint"></div>
+                    <div class="liquidGlass-shine"></div>
+
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
                         <circle cx="12" cy="12" r="3" />
@@ -233,11 +247,14 @@
             <div class="settings-section">
                 <h3>Data</h3>
                 <div class="settings-content">
+                    <div id="empty" style="margin-top:20px; font-size:14px;"></div>
                     <div class="export-import">
                         <button onclick="exportData()">Exportera Data</button>
                         <button onclick="document.getElementById('importFile').click()">Importera Data</button>
                         <input type="file" id="importFile" class="file-input" accept=".json" onchange="importData(event)">
                     </div>
+
+                    <div id="importExportStatus" style="margin-top:10px; font-size:14px;"></div>
                 </div>
             </div>
         </div>
@@ -272,5 +289,28 @@
         </div>
     </div>
 </body>
+
+
+    <!-- ================================= -->
+    <!-- LIQUID GLASS SVG                  -->
+    <!-- ================================= -->
+
+    <!-- CHATGPT -->
+<svg style="display:none">
+  <filter id="glass-distortion" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.01 0.01" numOctaves="1" seed="5" result="turbulence"/>
+    <feComponentTransfer in="turbulence" result="mapped">
+      <feFuncR type="gamma" amplitude="1" exponent="10" offset="0.5"/>
+      <feFuncG type="gamma" amplitude="0" exponent="1" offset="0"/>
+      <feFuncB type="gamma" amplitude="0" exponent="1" offset="0.5"/>
+    </feComponentTransfer>
+    <feGaussianBlur in="turbulence" stdDeviation="3" result="softMap"/>
+    <feSpecularLighting in="softMap" surfaceScale="5" specularConstant="1" specularExponent="100" result="specLight">
+      <fePointLight x="-200" y="-200" z="300"/>
+    </feSpecularLighting>
+    <feComposite in="specLight" operator="arithmetic" k2="1" k3="1"/>
+    <feDisplacementMap in="SourceGraphic" in2="softMap" scale="50" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
 
 </html>

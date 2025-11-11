@@ -232,6 +232,8 @@ function showView(viewName, button) {
     lastView = previous;
   }
 
+  
+
   // Update view visibility
   document
     .querySelectorAll(".view")
