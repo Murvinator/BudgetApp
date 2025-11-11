@@ -1042,6 +1042,7 @@ body.settings-open .tab-bar { display: none !important; }
 /* Make small helper text/color for empty states inside settings */
 #settings-view .settings-content p { color: var(--text-tertiary); font-size: 14px; }
 
+
 /* Settings footer link */
 .settings-footer {
     text-align: center;
@@ -1060,6 +1061,12 @@ body.settings-open .tab-bar { display: none !important; }
 
 .settings-footer a:hover {
     opacity: 1;
+}
+
+.swish-footer {
+    text-align: center;
+    padding: 10px;
+    margin-top: 20px;
 }
 
 /* Active style for the settings nav-action bubble (keeps it visually separate but highlighted) */
@@ -2106,4 +2113,16 @@ body.settings-open .tab-bar { display: none !important; }
 
 .file-input {
     display: none;
+}
+
+.swish-btn {
+    padding: 12px 22px;
+    background: linear-gradient(135deg, var(--system-green), var(--system-green));
+    color: white;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
