@@ -213,7 +213,8 @@ body {
     inset: 0; /* cover full header */
     pointer-events: none;
     opacity: 0;
-    /* transition: opacity 220ms ease, transform 220ms ease; */
+    /* transition: opacity 220ms ease, transform 220ms ease;
+    animation: slideUp 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; */
     transform: translateY(6px);
     border-radius: inherit;
 }
@@ -232,6 +233,8 @@ body {
     font-size: 20px;
     font-weight: 700;
     /* transition: font-size 180ms ease, transform 180ms ease; */
+    /* transition: opacity 220ms ease, transform 220ms ease; */
+    animation: slideUp 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     color: var(--text-primary);
     /* opacity: 1; */
 }
@@ -386,7 +389,8 @@ body {
     border-radius: 30px;
     border: none;
     color: var(--text-primary);
-    font-weight: 700;
+    font-weight: 550;
+    font-size: 15px;
 }
 
 .tab-btn.active {
@@ -1389,7 +1393,7 @@ body.settings-open .tab-bar { display: none !important; }
 }
 
 .remaining-row.animate-in {
-    animation: slideDown 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    animation: slideUp 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
 /* ================================= */

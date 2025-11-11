@@ -879,7 +879,7 @@ function updateMonthlyView() {
     // Create "Kvar att betala" (remaining to pay) row if any items are paid
     if (anyPaid && remainingAmount > 0) {
       const remainingDiv = document.createElement("div");
-      remainingDiv.className = `expense-item remaining-row ${isFirstAppearance ? "animate-in" : ""}`;
+      remainingDiv.className = `expense-item remaining-row`;
       remainingDiv.innerHTML = `
             <div class="expense-info">
                 <div class="expense-name" style="font-style: italic;">Kvar att betala</div>
