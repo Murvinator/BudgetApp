@@ -11,6 +11,37 @@
       --accent: rgba(255,255,255,0.6);
       --card-bg: rgba(255,255,255,0.4);
       --shadow: rgba(0,0,0,0.08);
+      /* System Colors */
+    --system-blue: #007AFF;
+    --system-red: #FF3B30;
+    --system-green: #34C759;
+    --system-orange: #FF9500;
+    --system-purple: #AF52DE;
+    --system-pink: #FF2D92;
+    --system-teal: #5AC8FA;
+    --system-yellow: #FFCC00;
+    --system-gray: #8E8E93;
+    --system-gray2: #C7C7CC;
+    --system-gray3: #D1D1D6;
+    --system-gray4: #E5E5EA;
+    --system-gray5: #F2F2F7;
+    --system-gray6: #F7F7F7;
+
+    /* Theme Colors - Light Mode */
+    --bg-primary: #FFFFFF;
+    --bg-secondary: rgb(242,242,247, 0.5);
+    /* Card background (matches iOS cards) */
+    --card-bg: #FFFFFF;
+    --text-primary: #000000;
+    --text-secondary: #3C3C43;
+    --text-tertiary: #787880;
+    --separator: rgba(60, 60, 67, 0.12);
+
+    /* Safe Area */
+    --safe-area-top: env(safe-area-inset-top);
+    --safe-area-bottom: env(safe-area-inset-bottom);
+    /* Tab bar bottom position (single control for responsive positioning) */
+    --tab-bar-bottom: 10px;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -122,6 +153,29 @@
         max-width: 160px;
       }
     }
+    .app-btn {
+    padding: 22px 40px;
+    background: linear-gradient(135deg, var(--system-blue), var(--system-purple));
+    color: white;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: 600;
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.swish-btn {
+    padding: 22px 40px;
+    background: linear-gradient(135deg, var(--system-green), var(--system-green));
+    color: white;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: 600;
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
 
   </style>
 </head>
@@ -154,15 +208,19 @@
   <div class="glass-card">
     <h2>Open the App</h2>
     <div class="steps" style="text-align:center;">
-      <p><a href="https://murvbudgetapp.netlify.app/" target="_blank" style="color:var(--text); text-decoration:underline;">Open MurvBudget</a></p>
+      <button class="app-btn" onclick="window.location.href='https://murvbudgetapp.netlify.app/'">Open MurvBudget</button>
+      
     </div>
   </div>
 
   <div class="glass-card">
-    <h2>Support This Project</h2>
+    <h2>Support this project</h2>
     <div class="steps" style="text-align:center;">
       <p>If you find MurvBudget helpful, consider supporting its development!</p>
-      <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="murvin" data-color="#FFDD00" data-emoji="😍"  data-font="Lato" data-text="Support this project" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+      
+                    <button class="swish-btn" onclick="window.location.href='https://app.swish.nu/1/p/sw/?sw=46701484473&amt=10.0&msg=Cool%20app&edit=amt,msg'">Swisha en gåva</button>
+      
+      
       <p style="margin-top:15px; font-size:0.9rem; opacity:0.7;">Thank you for your support! </p>
     </div>
   </div>
