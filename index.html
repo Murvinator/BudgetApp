@@ -143,7 +143,7 @@
                     <div class="liquidGlass-shine"></div>
 
                     <button type="button" class="tab-btn active" onclick="showView('overview-view', this)">Översikt</button>
-                    <button type="button" class="tab-btn" onclick="showView('budget-view', this)">Rörligt</button>
+                    <button type="button" class="tab-btn" onclick="showView('budget-view', this)">Rörliga</button>
                     <button type="button" class="tab-btn" onclick="showView('monthly-view', this)">Checklista</button>
                 </div>
                 <button type="button" class="nav-action-btn liquidGlass-wrapper" onclick="showView('settings-view', this)">
@@ -179,7 +179,7 @@
 
             <!-- Variable Expenses Settings Section -->
             <div class="settings-section">
-                <h3>Varierande utgifter</h3>
+                <h3>Rörliga utgifter</h3>
                 <div class="settings-content">
                     <div class="input-group">
                         <input type="text" id="newVariableExpenseName" placeholder="Namn">
@@ -187,6 +187,18 @@
                         <button onclick="addVariableExpense()">Lägg till</button>
                     </div>
                     <div id="variableExpensesList"></div>
+                </div>
+            </div>
+
+            <!-- Category Settings Section -->
+            <div class="settings-section">
+                <h3>Kategorier</h3>
+                <div class="settings-content">
+                    <div class="input-group">
+                        <input type="text" id="newCategoryName" placeholder="Ny kategori">
+                        <button onclick="addCategory()">Lägg till</button>
+                    </div>
+                    <div id="categoryList"></div>
                 </div>
             </div>
 
@@ -206,17 +218,7 @@
                 </div>
             </div>
 
-            <!-- Category Settings Section -->
-            <div class="settings-section">
-                <h3>Kategorier</h3>
-                <div class="settings-content">
-                    <div class="input-group">
-                        <input type="text" id="newCategoryName" placeholder="Ny kategori">
-                        <button onclick="addCategory()">Lägg till</button>
-                    </div>
-                    <div id="categoryList"></div>
-                </div>
-            </div>
+            
 
             <!-- Income Settings Section -->
             <div class="settings-section">
@@ -252,6 +254,7 @@
                     <div class="export-import">
                         <button onclick="exportData()">Exportera Data</button>
                         <button onclick="document.getElementById('importFile').click()">Importera Data</button>
+                        <button onclick="loadTestData()">Ladda testdata</button>
                         <input type="file" id="importFile" class="file-input" accept=".json" onchange="importData(event)">
                     </div>
 

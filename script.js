@@ -190,6 +190,41 @@ function importData(event) {
   }
 }
 
+// Load bundled test data as if it was imported via file picker
+async function loadTestData() {
+  // Try lowercase path first (requested), then fallback to existing capitalized file name in repo
+  const paths = [
+    'assets/testdata/testdata.json',
+    'assets/testdata/Testdata.json'
+  ];
+  let lastError = null;
+  for (const p of paths) {
+    try {
+      const res = await fetch(p, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const text = await res.text();
+      const imported = JSON.parse(text);
+      if (confirm("Detta kommer att ersätta all nuvarande data. Fortsätt?")) {
+        budgetData = imported;
+        migrateDebtsFromExpenses();
+        migrateDebtPaymentsAfterLoad();
+        saveData();
+        updateAllViews();
+        // Switch back to overview like the normal import flow
+        const firstTabBtn = document.querySelector('.tab-btn');
+        showView('overview-view', firstTabBtn);
+        alert("Testdata laddad!");
+      }
+      return; // success, stop trying other paths
+    } catch (err) {
+      lastError = err;
+      // continue to next path
+    }
+  }
+  console.error('Kunde inte ladda testdata:', lastError);
+  alert('Kunde inte ladda testdata. Kontrollera att filen finns i assets/testdata/.');
+}
+
 function migrateDebtPaymentsAfterLoad() {
   if (!budgetData.debtPayments || !budgetData.debts) return;
   const keys = Object.keys(budgetData.debtPayments);
