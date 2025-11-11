@@ -29,7 +29,7 @@
 
     /* Theme Colors - Light Mode */
     --bg-primary: #FFFFFF;
-    --bg-secondary: #F2F2F7;
+    --bg-secondary: rgb(242,242,247, 0.5);
     /* Card background (matches iOS cards) */
     --card-bg: #FFFFFF;
     --text-primary: #000000;
@@ -48,7 +48,7 @@
 @media (prefers-color-scheme: dark) {
     :root {
         --bg-primary: #000000;
-        --bg-secondary: #1C1C1E;
+        --bg-secondary: rgb(28,28,30);
         --text-primary: #FFFFFF;
         --text-secondary: #EBEBF5;
         --text-tertiary: #EBEBF599;
@@ -456,6 +456,11 @@ body {
 .tab-btn.active {
     /* subtle emphasis for active tab */
     background: var(--bg-secondary);
+    /* opacity: 0.5; */
+
+    /* --bg-secondary: #F2F2F7;
+    --bg-secondary: #1C1C1E; */
+    
 }
 
 .tab-btn:active { transform: translateY(0); }
