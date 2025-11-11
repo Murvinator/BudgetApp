@@ -1043,6 +1043,26 @@ body.settings-open .tab-bar { display: none !important; }
 /* Make small helper text/color for empty states inside settings */
 #settings-view .settings-content p { color: var(--text-tertiary); font-size: 14px; }
 
+/* Settings footer link */
+.settings-footer {
+    text-align: center;
+    padding: 40px 20px 20px;
+    margin-top: 20px;
+}
+
+.settings-footer a {
+    color: var(--text-tertiary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.settings-footer a:hover {
+    opacity: 1;
+}
+
 /* Active style for the settings nav-action bubble (keeps it visually separate but highlighted) */
 .nav-action-btn.active {
     box-shadow: 0 10px 30px rgba(0,0,0,0.12);
@@ -1178,12 +1198,12 @@ body.settings-open .tab-bar { display: none !important; }
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
 } */
-
+/* 
 .expense-item:last-child {
-    /* border-bottom-left-radius: 16px;
+    border-bottom-left-radius: 16px;
     border-bottom-right-radius: 16px;
-    border-bottom: none; */
-}
+    border-bottom: none;
+} */
 
 .expense-item:active {
     background: var(--system-gray5);

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About MurvBudget</title>
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --text: #111;
+      --accent: rgba(255,255,255,0.6);
+      --card-bg: rgba(255,255,255,0.4);
+      --shadow: rgba(0,0,0,0.08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f1115;
+        --text: #f8f8f8;
+        --accent: rgba(255,255,255,0.1);
+        --card-bg: rgba(255,255,255,0.05);
+        --shadow: rgba(0,0,0,0.4);
+      }
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .hero {
+      padding: 80px 20px 60px;
+      text-align: center;
+    }
+
+    .title {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .tagline {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto;
+      opacity: 0.85;
+    }
+
+    .glass-card {
+      margin: 40px auto;
+      max-width: 900px;
+      background: var(--card-bg);
+      backdrop-filter: blur(18px) saturate(180%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      border-radius: 22px;
+      padding: 30px;
+      box-shadow: 0 8px 24px var(--shadow);
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 25px;
+      margin-top: 10px;
+    }
+
+    .section {
+      padding: 20px;
+    }
+
+    .steps {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .steps p {
+      margin: 12px 0;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 40px 20px;
+      opacity: 0.6;
+      font-size: 0.9rem;
+    }
+
+    .screenshots {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .placeholder-img {
+      width: 160px;
+      height: 320px;
+      border-radius: 20px;
+      background: var(--accent);
+      opacity: 0.5;
+    }
+
+    .screenshot-img {
+      width: 180px;
+      height: auto;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px var(--shadow);
+      transition: transform 0.2s ease;
+    }
+
+    .screenshot-img:hover {
+      transform: scale(1.05);
+    }
+
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <div class="title">MurvBudget</div>
+    <div class="tagline">A clean and simple budget app — no AI, no bank connection, just a fast way to track your expenses.</div>
+  </section>
+
+  <div class="glass-card">
+    <h2>Screenshots</h2>
+    <div class="screenshots">
+      <img src="assets/screenshots/main.png" alt="MurvBudget Screenshot 1" class="screenshot-img">
+      <img src="assets/screenshots/main2.png" alt="MurvBudget Screenshot 2" class="screenshot-img">
+      <img src="assets/screenshots/main3.png" alt="MurvBudget Screenshot 3" class="screenshot-img">
+      <img src="assets/screenshots/main4.png" alt="MurvBudget Screenshot 4" class="screenshot-img">
+    </div>
+  </div>
+
+  <div class="glass-card">
+    <h2>How to Add MurvBudget to Your Home Screen (iPhone)</h2>
+    <div class="steps">
+      <p>1. Open the <a href="https://murvbudgetapp.netlify.app/" target="_blank" style="color:var(--text); text-decoration:underline;">MurvBudget app link</a> in Safari.</p>
+      <p>2. Tap the <strong>Share</strong> button at the bottom of the screen.</p>
+      <p>3. Scroll down and choose <strong>Add to Home Screen</strong>.</p>
+      <p>4. Tap <strong>Add</strong> — and you're done!</p>
+    </div>
+  </div>
+
+  <div class="glass-card">
+    <h2>Open the App</h2>
+    <div class="steps" style="text-align:center;">
+      <p><a href="https://murvbudgetapp.netlify.app/" target="_blank" style="color:var(--text); text-decoration:underline;">Open MurvBudget</a></p>
+    </div>
+  </div>
+
+  <div class="glass-card">
+    <h2>Support This Project</h2>
+    <div class="steps" style="text-align:center;">
+      <p>If you find MurvBudget helpful, consider supporting its development!</p>
+      <a href="swish://payment?data=%7B%22version%22%3A1%2C%22payee%22%3A%7B%22value%22%3A%22YOUR_SWISH_NUMBER%22%7D%2C%22message%22%3A%22Support%20MurvBudget%22%7D" 
+         style="display:inline-block; padding:12px 24px; background:#1db885; color:white; text-decoration:none; border-radius:12px; font-weight:600; margin-top:10px; transition: transform 0.2s ease;">
+        Support via Swish
+      </a>
+      <p style="margin-top:15px; font-size:0.9rem; opacity:0.7;">Thank you for your support! 🙏</p>
+    </div>
+  </div>
+
+  <div class="footer">© 2025 MurvBudget - Jonathan Belloni</div>
+</body>
+</html>

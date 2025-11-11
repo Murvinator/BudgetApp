@@ -970,7 +970,7 @@ function updateBudgetView() {
   const monthName = months[now.getMonth()];
   const monthDisplay = document.getElementById("currentMonth");
   if (monthDisplay) {
-    monthDisplay.textContent = `${monthName} ${now.getFullYear()}`;
+    monthDisplay.textContent = `${monthName}`;
   }
 
   const monthKey = getCurrentMonthKey();
