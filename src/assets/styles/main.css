@@ -25,7 +25,8 @@
 
     /* Theme Colors - Light Mode */
     --bg-primary: #FFFFFF;
-    --bg-secondary: rgb(242,242,247, 0.5);
+    --bg-secondary: rgb(242,242,247);
+    --bg-secondary-transparent: rgba(235, 235, 235, 0.6);
     /* Card background (matches iOS cards) */
     --card-bg: #FFFFFF;
     --text-primary: #000000;
@@ -45,6 +46,7 @@
     :root {
         --bg-primary: #000000;
         --bg-secondary: rgb(28,28,30);
+        --bg-secondary-transparent: rgba(47, 47, 49, 0.5);
         --text-primary: #FFFFFF;
         --text-secondary: #EBEBF5;
         --text-tertiary: #EBEBF599;

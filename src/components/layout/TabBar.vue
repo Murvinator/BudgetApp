@@ -179,19 +179,32 @@ import { RouterLink } from "vue-router";
     justify-content: center;
     box-shadow: 0 8px 22px rgba(0,0,0,0.12);
     cursor: pointer;
-    border: 1px solid rgba(0,0,0,0.06);
+    /* Remove direct border (causes blur artifacts with backdrop-filter) */
+    border: none;
     flex-shrink: 0; /* Prevent shrinking */
     flex-grow: 0;   /* Prevent growing */
 }
 
 .nav-action-btn svg { width: 20px; height: 20px; color: var(--text-secondary); }
 
-.nav-action-btn {
-    border: 1px solid rgba(0,0,0,0.06);
+.nav-action-btn { 
     backdrop-filter: blur(6px);
+    color: var(--text-secondary); 
+    position: relative;
 }
 
-.nav-action-btn { color: var(--text-secondary); }
+/* Crisp border rendered in its own layer to avoid blurring */
+.nav-action-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid var(--separator);
+    pointer-events: none;
+    z-index: 5; /* Above glass layers & icon */
+    box-shadow: inset 0 0 0 0.5px rgba(255,255,255,0.4); /* subtle hi-dpi accent */
+    transition: border-color 0.25s, box-shadow 0.25s, background-color 0.25s;
+}
 
 
 
@@ -212,18 +225,30 @@ import { RouterLink } from "vue-router";
 }
 
 .tab-btn.active {
-    background: var(--bg-secondary);
+    background: var(--bg-secondary-transparent);
+    
 }
 
 
 @media (prefers-color-scheme: dark) {
     .tab-bar .nav-action-btn { border: 1px solid rgba(255,255,255,0.06); }
     .tab-bar .tab-bar-inner { border: 1px solid rgba(255,255,255,0.06); }
-    .tab-btn.active { background: var(--system-gray5); }
+    .tab-btn.active { background: var(--bg-secondary-transparent); }
 }
 
 @media (prefers-color-scheme: dark) {
-    .nav-action-btn { border: 1px solid rgba(255,255,255,0.06); box-shadow: 0 6px 18px rgba(0,0,0,0.5); }
+    .nav-action-btn { box-shadow: 0 6px 18px rgba(0,0,0,0.5); }
+    .nav-action-btn::after { border-color: rgba(255,255,255,0.12); box-shadow: inset 0 0 0 0.5px rgba(255,255,255,0.25); }
+}
+
+.nav-action-btn.active {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+    color: var(--system-blue);
+}
+
+.nav-action-btn.active::after {
+    border-color: var(--system-blue);
+    box-shadow: inset 0 0 0 1px rgba(0,122,255,0.35);
 }
 
 </style>
