@@ -71,16 +71,6 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
     padding: 8px 16px 26px;
     border-bottom: none;
 }
-/* 
-.header.small::after {
-  content: '';
-  position: fixed;
-  left: 0;
-  right: 0;
-  height: 20px;  
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), transparent);
-  pointer-events: none;
-} */
 
 .header.small .header-content {
     justify-content: center;

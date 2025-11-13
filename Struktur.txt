@@ -1,0 +1,26 @@
+Struktur för murvbudget
+
+
+murvbudget/
+├── public/              # Static assets (favicon, images that don't need processing)
+├── src/
+│   ├── assets/          # Images, fonts, global styles
+│   │   └── styles/
+│   │       ├── main.css
+│   │       └── variables.css
+│   ├── components/      # Reusable components
+│   │   ├── common/      # Buttons, inputs, cards, etc.
+│   │   ├── layout/      # Header, Footer, Sidebar, etc.
+│   │   └── features/    # Feature-specific components
+│   ├── views/           # Page-level components (routes)
+│   ├── composables/     # Reusable composition functions (Vue 3 Composition API)
+│   ├── utils/           # Helper functions
+│   ├── stores/          # State management (Pinia recommended)
+│   ├── router/          # Vue Router configuration
+│   │   └── index.js
+│   ├── App.vue          # Root component
+│   └── main.js          # App entry point
+├── .env                 # Environment variables (Supabase keys, etc.)
+├── index.html
+├── vite.config.js
+└── package.json
